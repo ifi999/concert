@@ -63,7 +63,9 @@ ERD
 ---
 Sequence Diagram
 
-![img_1.png](img_1.png)
+![img_2.png](img_2.png)
 
 ---
 Milestone
+
+![img.png](img.png)
