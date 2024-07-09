@@ -6,7 +6,7 @@ import com.hhp.concert.controller.point.dto.GetCurrentBalanceResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/point")
+@RequestMapping("/api/point")
 public class PointController {
 
     @PostMapping("/charge")

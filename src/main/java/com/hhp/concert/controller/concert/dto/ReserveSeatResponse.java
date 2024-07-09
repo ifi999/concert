@@ -1,7 +1,10 @@
 package com.hhp.concert.controller.concert.dto;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
+@Getter
 public class ReserveSeatResponse {
 
     private long reservationId;

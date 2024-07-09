@@ -7,4 +7,11 @@ public class GetTokenRequest {
 
     private long userId;
 
+    private GetTokenRequest() {
+    }
+
+    public GetTokenRequest(final long userId) {
+        this.userId = userId;
+    }
+
 }

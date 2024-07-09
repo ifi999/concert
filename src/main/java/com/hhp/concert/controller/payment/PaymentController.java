@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/payment")
+@RequestMapping("/api/payment")
 public class PaymentController {
 
     @PostMapping
     public PayReservationResponse pay(
         @RequestBody PayReservationRequest request
     ) {
-        return new PayReservationResponse(123L, 456L, 30_000, LocalDateTime.now());
+        return new PayReservationResponse(123L, 456L, 30_000,  LocalDateTime.of(2024, 7, 1, 13, 0, 0));
     }
 
 }

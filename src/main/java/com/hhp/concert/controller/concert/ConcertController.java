@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/concert")
+@RequestMapping("/api/concert")
 public class ConcertController {
 
     @GetMapping("/{concertId}/available-dates")
     public List<GetConcertDatesResponse> getConcertDates(
         @PathVariable final long concertId)
     {
-        return List.of(new GetConcertDatesResponse(LocalDateTime.now().plusDays(7L)));
+        return List.of(new GetConcertDatesResponse(LocalDateTime.of(2024, 7, 1, 12, 0, 0)));
     }
 
     @GetMapping("/{concertId}/available-seats")
@@ -32,7 +32,7 @@ public class ConcertController {
         @PathVariable final long concertId,
         @RequestBody final ReserveSeatRequest request
     ) {
-        return new ReserveSeatResponse(1L, "A1", LocalDateTime.now(), "RESERVED");
+        return new ReserveSeatResponse(1L, "A1", LocalDateTime.of(2024, 7, 1, 13, 0, 0), "RESERVED");
     }
 
 }
