@@ -1,4 +1,5 @@
-package com.hhp.concert.infra.user.entity;
+package com.hhp.concert.infra.concert.entity;
+
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,18 +9,18 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "concert_user")
-public class ConcertUserEntity {
+@Table(name = "seat_type")
+public class SeatTypeEntity {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "type_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long typeId;
+
+    @Column(name = "type_name", nullable = false)
+    private String typeName;
 
     @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String email;
+    private Long price;
 
 }
