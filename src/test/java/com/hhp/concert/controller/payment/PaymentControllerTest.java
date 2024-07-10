@@ -16,9 +16,10 @@ class PaymentControllerTest {
     @Test
     void 결제한다() {
         // given
+        final long 사용자_ID = 123L;
         final long 예약_ID = 456L;
-        final int 결제_금액 = 30_000;
-        final PayReservationRequest 결제_요청 = new PayReservationRequest(예약_ID, 결제_금액);
+        final long 결제_금액 = 30_000;
+        final PayReservationRequest 결제_요청 = new PayReservationRequest(예약_ID, 사용자_ID, 결제_금액);
 
         // when
         final JsonPath 결제예약_응답 =

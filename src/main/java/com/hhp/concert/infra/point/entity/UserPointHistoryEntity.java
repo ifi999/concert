@@ -1,5 +1,6 @@
 package com.hhp.concert.infra.point.entity;
 
+import com.hhp.concert.domain.point.PointTransactionType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,7 +24,7 @@ public class UserPointHistoryEntity {
     private UserPointEntity userPoint;
 
     @Column(name = "transaction_type", nullable = false)
-    private String transactionType;
+    private PointTransactionType transactionType;
 
     @Column(nullable = false)
     private Long amount;

@@ -26,7 +26,7 @@ class UserControllerTest {
                 .body(토큰발급_요청)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-                .post("/api/users/token")
+                .post("/api/tokens")
             .then()
                 .statusCode(HttpStatus.OK.value())
                 .log().all()
@@ -37,7 +37,7 @@ class UserControllerTest {
         final long 응답_사용자_ID = 토큰발급_응답.getLong("userId");
         final String 응답_사용자_토큰 = 토큰발급_응답.getString("token");
 
-        assertThat(응답_사용자_ID).isEqualTo(1L);
+        assertThat(응답_사용자_ID).isEqualTo(123L);
         assertThat(응답_사용자_토큰).isEqualTo("token");
     }
 

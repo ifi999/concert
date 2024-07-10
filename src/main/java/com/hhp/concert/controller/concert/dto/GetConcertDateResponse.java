@@ -5,11 +5,11 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class GetConcertDatesResponse {
+public class GetConcertDateResponse {
 
     private LocalDateTime concertDate;
 
-    public GetConcertDatesResponse(final LocalDateTime concertDate) {
+    public GetConcertDateResponse(final LocalDateTime concertDate) {
         this.concertDate = concertDate;
     }
 

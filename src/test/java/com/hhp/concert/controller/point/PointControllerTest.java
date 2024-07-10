@@ -51,9 +51,8 @@ class PointControllerTest {
         final JsonPath 포인트조회_응답 =
             given()
                 .log().all()
-                .param("userId", 사용자_ID)
             .when()
-                .get("/api/points/balance")
+                .get("/api/users/{userId}/points/balance", 사용자_ID)
             .then()
                 .statusCode(HttpStatus.OK.value())
                 .log().all()

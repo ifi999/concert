@@ -1,11 +1,9 @@
 package com.hhp.concert.controller.concert;
 
-import com.hhp.concert.controller.concert.dto.GetConcertDatesResponse;
-import com.hhp.concert.controller.concert.dto.GetConcertSeatsResponse;
-import com.hhp.concert.controller.concert.dto.ReserveSeatRequest;
-import com.hhp.concert.controller.concert.dto.ReserveSeatResponse;
+import com.hhp.concert.controller.concert.dto.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,26 +11,44 @@ import java.util.List;
 @RequestMapping("/api/concerts")
 public class ConcertController {
 
-    @GetMapping("/{concertId}/available-dates")
-    public List<GetConcertDatesResponse> getConcertDates(
+    @GetMapping
+    public List<GetConcertResponse> getConcerts() {
+        return List.of(new GetConcertResponse(
+            1L,
+            "콘서트",
+            "가수",
+            "장소",
+            LocalDate.of(2024, 12, 10),
+            LocalDate.of(2024, 12, 11))
+        );
+    }
+
+    @GetMapping("/{concertId}")
+    public GetConcertInfoResponse getConcertInfo(
+        @PathVariable final String concertId) {
+        return new GetConcertInfoResponse(
+            1L,
+            "콘서트",
+            "가수",
+            "장소",
+            LocalDate.of(2024, 12, 10),
+            LocalDate.of(2024, 12, 11)
+        );
+    }
+
+    @GetMapping("/{concertId}/dates")
+    public List<GetConcertDateResponse> getConcertDates(
         @PathVariable final long concertId)
     {
-        return List.of(new GetConcertDatesResponse(LocalDateTime.of(2024, 7, 1, 12, 0, 0)));
+        return List.of(new GetConcertDateResponse(LocalDateTime.of(2024, 7, 1, 12, 0, 0)));
     }
 
-    @GetMapping("/{concertId}/available-seats")
-    public List<GetConcertSeatsResponse> getConcertSeats(
-        @PathVariable final long concertId
-    ) {
-        return List.of(new GetConcertSeatsResponse(1L, "A1", 30_000, "Standard"));
-    }
-
-    @PostMapping("/{concertId}/reserve-seat")
-    public ReserveSeatResponse reserveSeat(
+    @GetMapping("/{concertId}/dates/{date}/seats")
+    public List<GetConcertSeatResponse> getConcertSeats(
         @PathVariable final long concertId,
-        @RequestBody final ReserveSeatRequest request
+        @PathVariable final LocalDate date
     ) {
-        return new ReserveSeatResponse(1L, "A1", LocalDateTime.of(2024, 7, 1, 13, 0, 0), "RESERVED");
+        return List.of(new GetConcertSeatResponse(1L, "A1", 30_000, "Standard"));
     }
 
 }

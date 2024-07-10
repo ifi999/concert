@@ -23,7 +23,7 @@ class ConcertControllerTest {
             given()
                 .log().all()
             .when()
-                .get("/api/concerts/{concertId}/available-dates", 콘서트_ID)
+                .get("/api/concerts/{concertId}/dates", 콘서트_ID)
             .then()
                 .statusCode(HttpStatus.OK.value())
                 .log().all()
@@ -40,13 +40,14 @@ class ConcertControllerTest {
     void 콘서트_좌석을_조회한다() {
         // given
         final long 콘서트_ID = 1L;
+        final String 콘서트_날짜 = "2024-07-10";
 
         // when
         final JsonPath 좌석조회_응답 =
             given()
                 .log().all()
             .when()
-                .get("/api/concerts/{concertId}/available-seats", 콘서트_ID)
+                .get("/api/concerts/{concertId}/dates/{date}/seats", 콘서트_ID, 콘서트_날짜)
             .then()
                 .statusCode(HttpStatus.OK.value())
                 .log().all()
@@ -69,9 +70,10 @@ class ConcertControllerTest {
     void 좌석을_예약한다() {
         // given
         final long 콘서트_ID = 1L;
+        final long 콘서트_스케쥴_ID = 2L;
         final long 좌석_ID = 123L;
         final long 사용자_ID = 456L;
-        final ReserveSeatRequest 좌석예약_요청 = new ReserveSeatRequest(좌석_ID, 사용자_ID);
+        final ReserveSeatRequest 좌석예약_요청 = new ReserveSeatRequest(콘서트_ID, 콘서트_스케쥴_ID, 좌석_ID, 사용자_ID);
 
         // when
         final JsonPath 좌석예약_응답 =
@@ -80,7 +82,7 @@ class ConcertControllerTest {
                 .body(좌석예약_요청)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-                .post("/api/concerts/{concertId}/reserve-seat", 콘서트_ID)
+                .post("/api/reservation")
             .then()
                 .statusCode(HttpStatus.OK.value())
                 .log().all()

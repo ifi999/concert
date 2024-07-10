@@ -4,7 +4,7 @@ import com.hhp.concert.domain.user.TokenStatus;
 import lombok.Getter;
 
 @Getter
-public class GetTokenResponse {
+public class RenewTokenResponse {
 
     private long userId;
     private long tokenId;
@@ -12,7 +12,7 @@ public class GetTokenResponse {
     private TokenStatus tokenStatus;
     private int queueNumber;
 
-    public GetTokenResponse(
+    public RenewTokenResponse(
         final long userId,
         final long tokenId,
         final String token,
