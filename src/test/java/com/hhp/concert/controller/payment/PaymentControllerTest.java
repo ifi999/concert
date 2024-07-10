@@ -27,7 +27,7 @@ class PaymentControllerTest {
                 .body(결제_요청)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-                .post("/api/payment")
+                .post("/api/payments")
             .then()
                 .statusCode(HttpStatus.OK.value())
                 .log().all()

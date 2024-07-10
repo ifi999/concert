@@ -26,7 +26,7 @@ class UserControllerTest {
                 .body(토큰발급_요청)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-                .post("/api/user/token")
+                .post("/api/users/token")
             .then()
                 .statusCode(HttpStatus.OK.value())
                 .log().all()

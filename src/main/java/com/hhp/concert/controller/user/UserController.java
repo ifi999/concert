@@ -5,7 +5,7 @@ import com.hhp.concert.controller.user.dto.GetTokenResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api")
 public class UserController {
 
     @PostMapping("/token")

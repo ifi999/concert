@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/concert")
+@RequestMapping("/api/concerts")
 public class ConcertController {
 
     @GetMapping("/{concertId}/available-dates")

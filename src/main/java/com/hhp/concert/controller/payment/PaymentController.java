@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/api/payment")
+@RequestMapping("/api/payments")
 public class PaymentController {
 
     @PostMapping
