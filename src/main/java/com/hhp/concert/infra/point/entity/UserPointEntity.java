@@ -24,4 +24,13 @@ public class UserPointEntity {
     @Column(nullable = false)
     private Long point;
 
+    public UserPointEntity(final ConcertUserEntity user, final Long point) {
+        this.user = user;
+        this.point = point;
+    }
+
+    public void incrementPoint(final Long point) {
+        this.point += point;
+    }
+
 }

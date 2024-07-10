@@ -27,4 +27,10 @@ public class ConcertUserEntity {
         this.email = email;
     }
 
+    public ConcertUserEntity(final Long id, final String name, final String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
+
 }

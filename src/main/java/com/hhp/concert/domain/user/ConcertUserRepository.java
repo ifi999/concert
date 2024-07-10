@@ -4,4 +4,6 @@ public interface ConcertUserRepository {
 
     ConcertUser enroll(ConcertUser user);
 
+    ConcertUser getUserById(Long userId);
+
 }

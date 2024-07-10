@@ -20,7 +20,7 @@ public class UserController {
     public EnrollConcertUserResponse enrollUser(
         @RequestBody final EnrollConcertUserRequest request
     ) {
-        final ConcertUser enrolledUser = concertUserService.enroll(request.toDomain(request));
+        final ConcertUser enrolledUser = concertUserService.enroll(request.toDomain());
 
         return EnrollConcertUserResponse.from(enrolledUser);
     }

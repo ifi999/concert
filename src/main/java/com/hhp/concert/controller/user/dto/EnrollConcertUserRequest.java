@@ -14,7 +14,7 @@ public class EnrollConcertUserRequest {
         this.email = email;
     }
 
-    public ConcertUser toDomain(final EnrollConcertUserRequest request) {
-        return new ConcertUser(request.getName(), request.getEmail());
+    public ConcertUser toDomain() {
+        return new ConcertUser(this.name, this.email);
     }
 }

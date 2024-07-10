@@ -5,6 +5,8 @@ import com.hhp.concert.controller.point.dto.ChargePointResponse;
 import com.hhp.concert.controller.point.dto.GetCurrentBalanceResponse;
 import com.hhp.concert.controller.point.dto.GetUserPointHistory;
 import com.hhp.concert.domain.point.PointTransactionType;
+import com.hhp.concert.domain.point.UserPoint;
+import com.hhp.concert.domain.point.UserPointService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -14,11 +16,19 @@ import java.util.List;
 @RequestMapping("/api")
 public class PointController {
 
+    private final UserPointService userPointService;
+
+    public PointController(final UserPointService userPointService) {
+        this.userPointService = userPointService;
+    }
+
     @PostMapping("/points/charge")
     public ChargePointResponse charge(
         @RequestBody ChargePointRequest request
     ) {
-        return new ChargePointResponse(1L, 100_000L);
+        final UserPoint chargedUserPoint = userPointService.charge(request.toDomain());
+
+        return ChargePointResponse.from(chargedUserPoint);
     }
 
     @GetMapping("/users/{userId}/points/balance")
