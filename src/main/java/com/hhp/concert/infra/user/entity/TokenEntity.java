@@ -1,5 +1,6 @@
 package com.hhp.concert.infra.user.entity;
 
+import com.hhp.concert.domain.user.TokenStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class TokenEntity {
     private String token;
 
     @Column(name = "token_status", nullable = false)
-    private String tokenStatus;
+    private TokenStatus tokenStatus;
 
     @Column(name = "create_at", nullable = false)
     private LocalDateTime createdAt;

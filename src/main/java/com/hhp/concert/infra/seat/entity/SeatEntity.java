@@ -1,5 +1,6 @@
 package com.hhp.concert.infra.seat.entity;
 
+import com.hhp.concert.domain.seat.SeatStatus;
 import com.hhp.concert.infra.concert.entity.ConcertScheduleEntity;
 import com.hhp.concert.infra.concert.entity.ConcertZoneEntity;
 import jakarta.persistence.*;
@@ -34,6 +35,6 @@ public class SeatEntity {
     private String seatName;
 
     @Column(name = "seat_status", nullable = false)
-    private String seatStatus;
+    private SeatStatus seatStatus;
 
 }

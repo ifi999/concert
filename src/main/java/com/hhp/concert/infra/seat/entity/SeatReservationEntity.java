@@ -1,5 +1,6 @@
 package com.hhp.concert.infra.seat.entity;
 
+import com.hhp.concert.domain.seat.SeatReservationStatus;
 import com.hhp.concert.infra.concert.entity.ConcertScheduleEntity;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
 import jakarta.persistence.*;
@@ -36,7 +37,7 @@ public class SeatReservationEntity {
     private Long reservationPrice;
 
     @Column(name = "reservation_status", nullable = false)
-    private String reservationStatus;
+    private SeatReservationStatus reservationStatus;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
