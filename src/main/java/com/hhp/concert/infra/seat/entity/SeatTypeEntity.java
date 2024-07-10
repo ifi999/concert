@@ -1,4 +1,4 @@
-package com.hhp.concert.infra.concert.entity;
+package com.hhp.concert.infra.seat.entity;
 
 
 import jakarta.persistence.*;

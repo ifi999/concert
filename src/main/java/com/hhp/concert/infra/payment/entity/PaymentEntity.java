@@ -1,6 +1,6 @@
 package com.hhp.concert.infra.payment.entity;
 
-import com.hhp.concert.infra.concert.entity.SeatReservationEntity;
+import com.hhp.concert.infra.seat.entity.SeatReservationEntity;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

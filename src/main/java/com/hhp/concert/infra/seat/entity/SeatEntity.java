@@ -1,5 +1,7 @@
-package com.hhp.concert.infra.concert.entity;
+package com.hhp.concert.infra.seat.entity;
 
+import com.hhp.concert.infra.concert.entity.ConcertScheduleEntity;
+import com.hhp.concert.infra.concert.entity.ConcertZoneEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
