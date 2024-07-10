@@ -22,4 +22,9 @@ public class ConcertUserEntity {
     @Column(nullable = false)
     private String email;
 
+    public ConcertUserEntity(final String name, final String email) {
+        this.name = name;
+        this.email = email;
+    }
+
 }

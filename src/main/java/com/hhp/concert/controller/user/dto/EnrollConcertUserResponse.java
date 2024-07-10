@@ -1,5 +1,6 @@
 package com.hhp.concert.controller.user.dto;
 
+import com.hhp.concert.domain.user.ConcertUser;
 import lombok.Getter;
 
 @Getter
@@ -13,6 +14,10 @@ public class EnrollConcertUserResponse {
         this.userId = userId;
         this.name = name;
         this.email = email;
+    }
+
+    public static EnrollConcertUserResponse from(final ConcertUser user) {
+        return new EnrollConcertUserResponse(user.getId(), user.getName(), user.getEmail());
     }
 
 }

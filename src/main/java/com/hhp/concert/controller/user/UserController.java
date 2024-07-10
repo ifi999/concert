@@ -1,6 +1,8 @@
 package com.hhp.concert.controller.user;
 
 import com.hhp.concert.controller.user.dto.*;
+import com.hhp.concert.domain.user.ConcertUser;
+import com.hhp.concert.domain.user.ConcertUserService;
 import com.hhp.concert.domain.user.TokenStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,11 +10,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class UserController {
 
+    private final ConcertUserService concertUserService;
+
+    public UserController(final ConcertUserService concertUserService) {
+        this.concertUserService = concertUserService;
+    }
+
     @PostMapping("/users")
     public EnrollConcertUserResponse enrollUser(
         @RequestBody final EnrollConcertUserRequest request
     ) {
-        return new EnrollConcertUserResponse(1L, "유저", "222@2.2");
+        final ConcertUser enrolledUser = concertUserService.enroll(request.toDomain(request));
+
+        return EnrollConcertUserResponse.from(enrolledUser);
     }
 
     @PostMapping("/tokens")
