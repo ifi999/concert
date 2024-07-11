@@ -244,15 +244,21 @@ Content-Type: application/json
 - 동시에 여러 사용자가 예약 요청을 했을 때, 좌석이 중복으로 배정 가능하지 않도록 합니다.
 
 ---
-ERD
+## ERD
+
 ![img_1.png](img_1.png)
 
 ---
-Sequence Diagram
+## Sequence Diagram
 
 ![img_2.png](img_2.png)
 
 ---
-Milestone
+## Milestone
 
 ![img.png](img.png)
+
+---
+## Swagger
+
+![스크린샷 2024-07-12 오전 7.16.55.png](..%2F..%2FDesktop%2F%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202024-07-12%20%EC%98%A4%EC%A0%84%207.16.55.png)
