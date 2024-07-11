@@ -7,10 +7,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class ConcertUserServiceTest {
+
+    @Mock
+    private UserPointRepository userPointRepository;
 
     @Mock
     private ConcertUserRepository concertUserRepository;
@@ -26,6 +30,8 @@ class ConcertUserServiceTest {
         final ConcertUser 사용자 = new ConcertUser(사용자_이름, 사용자_메일);
         given(concertUserRepository.enroll(사용자))
             .willReturn(new ConcertUser(1L, "사용자1", "222@foo.bar"));
+        given(userPointRepository.charge(any(), any()))
+            .willReturn(new UserPoint(1L, 1L, 0L));
 
         // when
         final ConcertUser 등록된_사용자 = concertUserService.enroll(사용자);

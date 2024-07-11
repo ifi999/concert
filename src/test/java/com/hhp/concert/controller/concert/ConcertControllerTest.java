@@ -82,7 +82,7 @@ class ConcertControllerTest {
                 .body(좌석예약_요청)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-                .post("/api/reservation")
+                .post("/api/concerts/reservation")
             .then()
                 .statusCode(HttpStatus.OK.value())
                 .log().all()

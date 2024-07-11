@@ -1,6 +1,6 @@
-package com.hhp.concert.infra.payment.entity;
+package com.hhp.concert.infra.token.entity;
 
-import com.hhp.concert.infra.concert.entity.SeatReservationEntity;
+import com.hhp.concert.domain.token.TokenStatus;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "payment")
-public class PaymentEntity {
+@Table(name = "token")
+public class TokenEntity {
 
     @Id
-    @Column(name = "payment_id")
+    @Column(name = "token_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -24,14 +24,16 @@ public class PaymentEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private ConcertUserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id", nullable = false)
-    private SeatReservationEntity reservation;
+    @Column(nullable = false)
+    private String token;
 
-    @Column(name = "payment_price", nullable = false)
-    private Long paymentPrice;
+    @Column(name = "token_status", nullable = false)
+    private TokenStatus tokenStatus;
 
     @Column(name = "create_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "expires_at", nullable = false)
+    private LocalDateTime expiresAt;
 
 }

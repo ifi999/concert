@@ -1,6 +1,5 @@
 package com.hhp.concert.domain.user;
 
-import com.hhp.concert.domain.point.UserPointRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

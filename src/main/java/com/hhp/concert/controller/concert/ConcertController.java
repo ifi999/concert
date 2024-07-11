@@ -1,6 +1,8 @@
 package com.hhp.concert.controller.concert;
 
 import com.hhp.concert.controller.concert.dto.*;
+import com.hhp.concert.controller.concert.dto.GetSeatInfoResponse;
+import com.hhp.concert.domain.concert.SeatStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -49,6 +51,27 @@ public class ConcertController {
         @PathVariable final LocalDate date
     ) {
         return List.of(new GetConcertSeatResponse(1L, "A1", 30_000, "Standard"));
+    }
+
+    @PostMapping("/reservation")
+    public ReserveSeatResponse reserve(
+            @RequestBody final ReserveSeatRequest request
+    ) {
+        return new ReserveSeatResponse(1L, "A1", LocalDateTime.of(2024, 7, 1, 13, 0, 0), "RESERVED");
+    }
+
+    @GetMapping("/{concertId}/seats/{seatId}")
+    public GetSeatInfoResponse getSeatInfo(
+            @PathVariable final long seatId
+    ) {
+        return new GetSeatInfoResponse(
+                12L,
+                34L,
+                56L,
+                78L,
+                "A-11",
+                SeatStatus.AVAILABLE
+        );
     }
 
 }
