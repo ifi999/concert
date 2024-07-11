@@ -1,5 +1,6 @@
 package com.hhp.concert.controller.point.dto;
 
+import com.hhp.concert.domain.point.UserPoint;
 import lombok.Getter;
 
 @Getter
@@ -11,6 +12,10 @@ public class ChargePointResponse {
     public ChargePointResponse(final long userId, final long currentBalance) {
         this.userId = userId;
         this.currentBalance = currentBalance;
+    }
+
+    public static ChargePointResponse from(final UserPoint chargedUserPoint) {
+        return new ChargePointResponse(chargedUserPoint.getUserId(), chargedUserPoint.getPoint());
     }
 
 }
