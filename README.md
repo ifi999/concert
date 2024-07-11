@@ -261,4 +261,5 @@ Content-Type: application/json
 ---
 ## Swagger
 
-<img width="1427" alt="스크린샷 2024-07-12 오전 7 16 55" src="https://github.com/user-attachments/assets/33d4feda-8660-4c1d-82c8-0d5523dc9a41">
+![image](https://github.com/user-attachments/assets/7412b2a4-2183-4152-b759-83c9820c75e1)
+
