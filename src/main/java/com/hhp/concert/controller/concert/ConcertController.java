@@ -23,14 +23,7 @@ public class ConcertController {
     public List<GetConcertResponse> getConcerts() {
         List<Concert> concerts = concertService.getConcerts();
 
-        return List.of(new GetConcertResponse(
-            1L,
-            "콘서트",
-            "가수",
-            "장소",
-            LocalDate.of(2024, 12, 10),
-            LocalDate.of(2024, 12, 11))
-        );
+        return GetConcertResponse.from(concerts);
     }
 
     @GetMapping("/{concertId}")

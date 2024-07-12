@@ -1,17 +1,65 @@
 package com.hhp.concert.controller.concert;
 
 import com.hhp.concert.controller.concert.dto.ReserveSeatRequest;
+import com.hhp.concert.infra.concert.ConcertJpaRepository;
+import com.hhp.concert.infra.concert.entity.ConcertEntity;
+import com.hhp.concert.util.DateTimeProvider;
 import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class ConcertControllerTest {
+
+    @Autowired
+    private ConcertJpaRepository concertJpaRepository;
+
+    @Autowired
+    private DateTimeProvider dateTimeProvider;
+
+    @Test
+    void 콘서트_목록을_조회한다() {
+        // given
+        final LocalDate 현재시간 = dateTimeProvider.currentDate();
+
+        concertJpaRepository.save(new ConcertEntity(
+            "콘서트1",
+            "아티스트1",
+            "장소1",
+            현재시간.plus(7, ChronoUnit.DAYS),
+            현재시간.plus(10, ChronoUnit.DAYS)
+        ));
+
+        // when
+        final JsonPath 콘서트_목록_조회_응답 =
+            given()
+                .log().all()
+            .when()
+                .get("/api/concerts")
+            .then()
+                .statusCode(HttpStatus.OK.value())
+                .log().all()
+            .extract()
+                .jsonPath();
+
+        // then
+        final String 콘서트명 = 콘서트_목록_조회_응답.getString("[0].concertName");
+        final String 아티스트 = 콘서트_목록_조회_응답.getString("[0].artist");
+        final String 장소 = 콘서트_목록_조회_응답.getString("[0].venue");
+
+        assertThat(콘서트명).isEqualTo("콘서트1");
+        assertThat(아티스트).isEqualTo("아티스트1");
+        assertThat(장소).isEqualTo("장소1");
+    }
 
     @Test
     void 콘서트_날짜를_조회한다() {
