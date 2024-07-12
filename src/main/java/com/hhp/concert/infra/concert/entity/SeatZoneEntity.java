@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "concert_zone")
-public class ConcertZoneEntity {
+@Table(name = "seat_zone")
+public class SeatZoneEntity {
 
     @Id
     @Column(name = "zone_id")

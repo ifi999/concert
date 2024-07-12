@@ -8,23 +8,20 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "seat")
-public class SeatEntity {
+@Table(name = "concert_seat")
+public class ConcertSeatEntity {
 
     @Id
-    @Column(name = "seat_id")
+    @Column(name = "concert_seat_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "zone_id", nullable = false)
-    private SeatZoneEntity seatZone;
+    @JoinColumn(name = "concert_id", nullable = false)
+    private ConcertEntity concert;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_id", nullable = false)
-    private SeatTypeEntity seatType;
-
-    @Column(name = "seat_name", nullable = false)
-    private String seatName;
+    @JoinColumn(name = "seat_id", nullable = false)
+    private SeatEntity seat;
 
 }

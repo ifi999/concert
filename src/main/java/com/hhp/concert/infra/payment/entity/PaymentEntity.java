@@ -1,6 +1,6 @@
 package com.hhp.concert.infra.payment.entity;
 
-import com.hhp.concert.infra.concert.entity.SeatReservationEntity;
+import com.hhp.concert.infra.concert.entity.ConcertReservationEntity;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -26,7 +26,7 @@ public class PaymentEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_id", nullable = false)
-    private SeatReservationEntity reservation;
+    private ConcertReservationEntity reservation;
 
     @Column(name = "payment_price", nullable = false)
     private Long paymentPrice;
