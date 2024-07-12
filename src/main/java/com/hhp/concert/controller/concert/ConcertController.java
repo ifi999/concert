@@ -21,22 +21,17 @@ public class ConcertController {
 
     @GetMapping
     public List<GetConcertResponse> getConcerts() {
-        List<Concert> concerts = concertService.getConcerts();
+        final List<Concert> concerts = concertService.getConcerts();
 
         return GetConcertResponse.from(concerts);
     }
 
     @GetMapping("/{concertId}")
     public GetConcertInfoResponse getConcertInfo(
-        @PathVariable final String concertId) {
-        return new GetConcertInfoResponse(
-            1L,
-            "콘서트",
-            "가수",
-            "장소",
-            LocalDate.of(2024, 12, 10),
-            LocalDate.of(2024, 12, 11)
-        );
+        @PathVariable final long concertId) {
+        final Concert concert = concertService.getConcertById(concertId);
+
+        return GetConcertInfoResponse.from(concert);
     }
 
     @GetMapping("/{concertId}/dates")
