@@ -19,8 +19,19 @@ public class ConcertRepositoryImpl implements ConcertRepository {
     }
 
     @Override
-    public List<ConcertEntity> getConcerts(final LocalDate currentDate) {
-        return concertJpaRepository.findActiveConcerts(currentDate);
+    public List<Concert> getConcerts(final LocalDate currentDate) {
+        final List<ConcertEntity> activeConcerts = concertJpaRepository.findActiveConcerts(currentDate);
+
+        return activeConcerts.stream()
+            .map(o -> Concert.builder()
+                .id(o.getId())
+                .concertName(o.getConcertName())
+                .artist(o.getArtist())
+                .venue(o.getVenue())
+                .startDate(o.getStartDate())
+                .endDate(o.getEndDate())
+                .build())
+            .toList();
     }
 
     @Override

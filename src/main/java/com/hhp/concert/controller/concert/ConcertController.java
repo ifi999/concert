@@ -2,6 +2,7 @@ package com.hhp.concert.controller.concert;
 
 import com.hhp.concert.controller.concert.dto.*;
 import com.hhp.concert.domain.concert.Concert;
+import com.hhp.concert.domain.concert.ConcertSchedule;
 import com.hhp.concert.domain.concert.ConcertService;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +39,9 @@ public class ConcertController {
     public List<GetConcertDateResponse> getConcertDates(
         @PathVariable final long concertId)
     {
-        return List.of(new GetConcertDateResponse(LocalDateTime.of(2024, 7, 1, 12, 0, 0)));
+        final List<ConcertSchedule> concertSchedules = concertService.getConcertSchedules(concertId);
+
+        return GetConcertDateResponse.from(concertSchedules);
     }
 
     @GetMapping("/{concertId}/dates/{date}/seats")
@@ -51,15 +54,15 @@ public class ConcertController {
 
     @PostMapping("/reservation")
     public ReserveSeatResponse reserve(
-            @RequestBody final ReserveSeatRequest request
+        @RequestBody final ReserveSeatRequest request
     ) {
         return new ReserveSeatResponse(1L, "A1", LocalDateTime.of(2024, 7, 1, 13, 0, 0), "RESERVED");
     }
 
     @GetMapping("/{concertId}/seats/{seatId}")
     public GetSeatInfoResponse getSeatInfo(
-            @PathVariable final long seatId
-    ) {
+        @PathVariable final long concertId,
+        @PathVariable final long seatId) {
         return new GetSeatInfoResponse(
                 12L,
                 34L,

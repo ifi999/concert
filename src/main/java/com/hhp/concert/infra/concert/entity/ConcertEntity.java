@@ -2,6 +2,7 @@ package com.hhp.concert.infra.concert.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,6 +41,23 @@ public class ConcertEntity {
         final LocalDate startDate,
         final LocalDate endDate
     ) {
+        this.concertName = concertName;
+        this.artist = artist;
+        this.venue = venue;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    @Builder
+    public ConcertEntity(
+        final Long id,
+        final String concertName,
+        final String artist,
+        final String venue,
+        final LocalDate startDate,
+        final LocalDate endDate
+    ) {
+        this.id = id;
         this.concertName = concertName;
         this.artist = artist;
         this.venue = venue;

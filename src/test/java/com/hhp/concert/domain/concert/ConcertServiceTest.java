@@ -39,7 +39,8 @@ class ConcertServiceTest {
         given(dateTimeProvider.currentDate())
             .willReturn(조회_시간);
         given(concertRepository.getConcerts(조회_시간))
-            .willReturn(List.of(new ConcertEntity(
+            .willReturn(List.of(new Concert(
+                1L,
                 "콘서트1",
                 "아티스트1",
                 "장소1",
