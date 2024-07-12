@@ -6,4 +6,6 @@ public interface ConcertScheduleRepository {
 
     List<ConcertSchedule> getConcertSchedulesByConcertId(Concert concert);
 
+    ConcertSchedule getConcertScheduleById(long scheduleId);
+
 }

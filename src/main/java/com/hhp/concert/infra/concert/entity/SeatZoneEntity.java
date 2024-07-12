@@ -22,4 +22,9 @@ public class SeatZoneEntity {
     @Column(name = "available_seats", nullable = false)
     private Integer availableSeats;
 
+    public SeatZoneEntity(final String zoneName, final Integer availableSeats) {
+        this.zoneName = zoneName;
+        this.availableSeats = availableSeats;
+    }
+
 }
