@@ -40,4 +40,7 @@ public class ConcertSeatEntity {
         this.seatStatus = seatStatus;
     }
 
+    public void reserve() {
+        this.seatStatus = SeatStatus.RESERVED;
+    }
 }

@@ -1,9 +1,10 @@
 package com.hhp.concert.infra.concert.entity;
 
-import com.hhp.concert.domain.concert.SeatReservationStatus;
+import com.hhp.concert.domain.concert.ConcertReservationStatus;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,15 +31,31 @@ public class ConcertReservationEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seat_id", nullable = false)
-    private SeatEntity seat;
+    private ConcertSeatEntity concertSeat;
 
     @Column(name = "reservation_price", nullable = false)
     private Long reservationPrice;
 
     @Column(name = "reservation_status", nullable = false)
-    private SeatReservationStatus reservationStatus;
+    private ConcertReservationStatus reservationStatus;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Builder
+    public ConcertReservationEntity(
+        final ConcertUserEntity user,
+        final ConcertScheduleEntity schedule,
+        final ConcertSeatEntity concertSeat,
+        final Long reservationPrice,
+        final ConcertReservationStatus reservationStatus
+    ) {
+        this.user = user;
+        this.schedule = schedule;
+        this.concertSeat = concertSeat;
+        this.reservationPrice = reservationPrice;
+        this.reservationStatus = reservationStatus;
+        this.createdAt = LocalDateTime.now();
+    }
 
 }

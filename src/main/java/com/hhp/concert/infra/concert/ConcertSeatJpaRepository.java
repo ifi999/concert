@@ -3,8 +3,12 @@ package com.hhp.concert.infra.concert;
 import com.hhp.concert.infra.concert.entity.ConcertEntity;
 import com.hhp.concert.infra.concert.entity.ConcertScheduleEntity;
 import com.hhp.concert.infra.concert.entity.ConcertSeatEntity;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.QueryHint;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -37,5 +41,15 @@ public interface ConcertSeatJpaRepository extends JpaRepository<ConcertSeatEntit
         @Param("schedule") ConcertScheduleEntity schedule,
         @Param("seatId") Long seatId
     );
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value = "2000")})
+    @Query("""
+        SELECT s
+          FROM ConcertSeatEntity s
+         WHERE s.id = :seatId
+           AND s.seatStatus = 'AVAILABLE'
+    """)
+    Optional<ConcertSeatEntity> findBySeatIdWithLock(@Param("seatId") Long seatId);
 
 }
