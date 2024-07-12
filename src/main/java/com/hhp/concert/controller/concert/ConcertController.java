@@ -62,17 +62,15 @@ public class ConcertController {
         return new ReserveSeatResponse(1L, "A1", LocalDateTime.of(2024, 7, 1, 13, 0, 0), "RESERVED");
     }
 
-    @GetMapping("/{concertId}/seats/{seatId}")
+    @GetMapping("/{concertId}/schedules/{scheduleId}/seats/{seatId}")
     public GetSeatInfoResponse getSeatInfo(
         @PathVariable final long concertId,
-        @PathVariable final long seatId) {
-        return new GetSeatInfoResponse(
-                12L,
-                34L,
-                56L,
-                78L,
-                "A-11"
-        );
+        @PathVariable final long scheduleId,
+        @PathVariable final long seatId
+    ) {
+        final ConcertSeat concertSeat = concertService.getSeatInfo(concertId, scheduleId, seatId);
+
+        return GetSeatInfoResponse.from(concertSeat);
     }
 
 }
