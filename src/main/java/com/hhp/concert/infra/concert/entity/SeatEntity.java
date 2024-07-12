@@ -1,6 +1,5 @@
 package com.hhp.concert.infra.concert.entity;
 
-import com.hhp.concert.domain.concert.SeatStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,10 +17,6 @@ public class SeatEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id", nullable = false)
-    private ConcertScheduleEntity concertSchedule;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "zone_id", nullable = false)
     private ConcertZoneEntity concertZone;
 
@@ -31,8 +26,5 @@ public class SeatEntity {
 
     @Column(name = "seat_name", nullable = false)
     private String seatName;
-
-    @Column(name = "seat_status", nullable = false)
-    private SeatStatus seatStatus;
 
 }

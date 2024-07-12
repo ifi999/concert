@@ -16,10 +16,6 @@ public class ConcertZoneEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id", nullable = false)
-    private ConcertScheduleEntity concertSchedule;
-
     @Column(name = "zone_name", nullable = false)
     private String zoneName;
 
