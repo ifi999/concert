@@ -1,5 +1,7 @@
 package com.hhp.concert.controller.concert.dto;
 
+import com.hhp.concert.domain.concert.Concert;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -14,6 +16,7 @@ public class GetConcertInfoResponse {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    @Builder
     public GetConcertInfoResponse(
         final Long concertId,
         final String concertName,
@@ -29,4 +32,16 @@ public class GetConcertInfoResponse {
         this.startDate = startDate;
         this.endDate = endDate;
     }
+
+    public static GetConcertInfoResponse from(final Concert concert) {
+        return GetConcertInfoResponse.builder()
+            .concertId(concert.getId())
+            .concertName(concert.getConcertName())
+            .artist(concert.getArtist())
+            .venue(concert.getVenue())
+            .startDate(concert.getStartDate())
+            .endDate(concert.getEndDate())
+            .build();
+    }
+
 }

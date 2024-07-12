@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,10 +52,10 @@ class ConcertServiceTest {
         final List<Concert> 콘서트_목록 = concertService.getConcerts();
 
         // then
-        Assertions.assertThat(콘서트_목록.size()).isEqualTo(1);
-        Assertions.assertThat(콘서트_목록.get(0).getConcertName()).isEqualTo("콘서트1");
-        Assertions.assertThat(콘서트_목록.get(0).getArtist()).isEqualTo("아티스트1");
-        Assertions.assertThat(콘서트_목록.get(0).getVenue()).isEqualTo("장소1");
+        assertThat(콘서트_목록.size()).isEqualTo(1);
+        assertThat(콘서트_목록.get(0).getConcertName()).isEqualTo("콘서트1");
+        assertThat(콘서트_목록.get(0).getArtist()).isEqualTo("아티스트1");
+        assertThat(콘서트_목록.get(0).getVenue()).isEqualTo("장소1");
     }
 
     @Test
@@ -70,7 +71,32 @@ class ConcertServiceTest {
         final List<Concert> 콘서트_목록 = concertService.getConcerts();
 
         // then
-        Assertions.assertThat(콘서트_목록.size()).isEqualTo(0);
+        assertThat(콘서트_목록.size()).isEqualTo(0);
+    }
+
+    @Test
+    void 콘서트_정보를_조회한다() {
+        // given
+        final long 콘서트_ID = 11L;
+        given(concertRepository.getConcertById(콘서트_ID))
+            .willReturn(new Concert(
+                11L,
+                "콘서트1",
+                "아티스트1",
+                "장소1",
+                LocalDate.of(2024, 7, 10),
+                LocalDate.of(2024, 7, 20)
+            )
+        );
+
+        // when
+        final Concert 콘서트 = concertService.getConcertById(콘서트_ID);
+
+        // then
+        assertThat(콘서트.getId()).isEqualTo(11L);
+        assertThat(콘서트.getConcertName()).isEqualTo("콘서트1");
+        assertThat(콘서트.getArtist()).isEqualTo("아티스트1");
+        assertThat(콘서트.getVenue()).isEqualTo("장소1");
     }
 
 }

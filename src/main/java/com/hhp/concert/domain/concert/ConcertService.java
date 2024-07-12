@@ -34,4 +34,8 @@ public class ConcertService {
             .toList();
     }
 
+    public Concert getConcertById(final long concertId) {
+        return concertRepository.getConcertById(concertId);
+    }
+
 }

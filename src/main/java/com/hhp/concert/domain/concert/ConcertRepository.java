@@ -9,4 +9,6 @@ public interface ConcertRepository {
 
     List<ConcertEntity> getConcerts(LocalDate currentDate);
 
+    Concert getConcertById(long concertId);
+
 }
