@@ -1,5 +1,6 @@
 package com.hhp.concert.infra.concert.entity;
 
+import com.hhp.concert.domain.SeatStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -28,10 +29,15 @@ public class ConcertSeatEntity {
     @JoinColumn(name = "seat_id", nullable = false)
     private SeatEntity seat;
 
-    public ConcertSeatEntity(final ConcertEntity concert, final ConcertScheduleEntity concertSchedule, final SeatEntity seat) {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "seat_status", nullable = false)
+    private SeatStatus seatStatus;
+
+    public ConcertSeatEntity(final ConcertEntity concert, final ConcertScheduleEntity concertSchedule, final SeatEntity seat, final SeatStatus seatStatus) {
         this.concert = concert;
         this.concertSchedule = concertSchedule;
         this.seat = seat;
+        this.seatStatus = seatStatus;
     }
 
 }

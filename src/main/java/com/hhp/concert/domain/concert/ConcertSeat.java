@@ -12,7 +12,9 @@ public class ConcertSeat {
     private Long seatId;
     private String zoneName;
     private String seatType;
+    private String seatName;
     private Long price;
+    private boolean isAvailable;
 
     @Builder
     public ConcertSeat(
@@ -22,7 +24,9 @@ public class ConcertSeat {
         final Long seatId,
         final String zoneName,
         final String seatType,
-        final Long price
+        final String seatName,
+        final Long price,
+        final boolean isAvailable
     ) {
         this.concertSeatId = concertSeatId;
         this.concertId = concertId;
@@ -30,7 +34,9 @@ public class ConcertSeat {
         this.seatId = seatId;
         this.zoneName = zoneName;
         this.seatType = seatType;
+        this.seatName = seatName;
         this.price = price;
+        this.isAvailable = isAvailable;
     }
 
 }

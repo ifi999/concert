@@ -6,4 +6,6 @@ public interface ConcertSeatRepository {
 
     List<ConcertSeat> getConcertScheduleSeats(Concert concert, ConcertSchedule concertSchedule);
 
+    ConcertSeat getSeatInfo(Concert concert, ConcertSchedule schedule, long seatId);
+
 }

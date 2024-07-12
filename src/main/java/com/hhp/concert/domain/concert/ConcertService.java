@@ -51,4 +51,11 @@ public class ConcertService {
         return concertSeatRepository.getConcertScheduleSeats(concert, concertSchedule);
     }
 
+    public ConcertSeat getSeatInfo(final long concertId, final long scheduleId, final long seatId) {
+        final Concert concert = concertRepository.getConcertById(concertId);
+        final ConcertSchedule schedule = concertScheduleRepository.getConcertScheduleById(scheduleId);
+
+        return concertSeatRepository.getSeatInfo(concert, schedule, seatId);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.hhp.concert.infra.concert;
 
+import com.hhp.concert.domain.SeatStatus;
 import com.hhp.concert.domain.concert.Concert;
 import com.hhp.concert.domain.concert.ConcertSchedule;
 import com.hhp.concert.domain.concert.ConcertSeat;
@@ -37,7 +38,7 @@ public class ConcertSeatRepositoryImpl implements ConcertSeatRepository {
         final ConcertScheduleEntity concertScheduleEntity = concertScheduleJpaRepository.findById(schedule.getConcertScheduleId())
             .orElseThrow(() -> new EntityNotFoundException("Concert schedule not found. ID: " + schedule.getConcertScheduleId()));
 
-        final List<ConcertSeatEntity> concertSeatEntities = concertSeatJpaRepository.findByConcertAndConcertSchedule(concertEntity, concertScheduleEntity);
+        final List<ConcertSeatEntity> concertSeatEntities = concertSeatJpaRepository.findAvailableConcertSeats(concertEntity, concertScheduleEntity);
 
         return concertSeatEntities.stream()
             .map(o -> ConcertSeat.builder()
@@ -47,9 +48,35 @@ public class ConcertSeatRepositoryImpl implements ConcertSeatRepository {
                 .seatId(o.getSeat().getId())
                 .zoneName(o.getSeat().getSeatZone().getZoneName())
                 .seatType(o.getSeat().getSeatType().getTypeName())
+                .seatName(o.getSeat().getSeatName())
                 .price(o.getSeat().getSeatType().getPrice())
+                .isAvailable(o.getSeatStatus().equals(SeatStatus.AVAILABLE))
                 .build())
             .toList();
+    }
+
+    @Override
+    public ConcertSeat getSeatInfo(final Concert concert, final ConcertSchedule schedule, final long seatId) {
+        final ConcertEntity concertEntity = concertJpaRepository.findById(concert.getId())
+            .orElseThrow(() -> new EntityNotFoundException("Concert not found. ID: " + concert.getId()));
+
+        final ConcertScheduleEntity concertScheduleEntity = concertScheduleJpaRepository.findById(schedule.getConcertScheduleId())
+            .orElseThrow(() -> new EntityNotFoundException("Concert schedule not found. ID: " + schedule.getConcertScheduleId()));
+
+        final ConcertSeatEntity concertSeatEntity = concertSeatJpaRepository.findConcertSeatInfo(concertEntity, concertScheduleEntity, seatId)
+            .orElseThrow(() -> new EntityNotFoundException("Concert seat not found. ID: " + seatId));
+
+        return ConcertSeat.builder()
+            .concertSeatId(concertSeatEntity.getId())
+            .concertId(concertSeatEntity.getConcert().getId())
+            .scheduleId(concertSeatEntity.getConcertSchedule().getId())
+            .seatId(concertSeatEntity.getSeat().getId())
+            .zoneName(concertSeatEntity.getSeat().getSeatZone().getZoneName())
+            .seatType(concertSeatEntity.getSeat().getSeatType().getTypeName())
+            .seatName(concertSeatEntity.getSeat().getSeatName())
+            .price(concertSeatEntity.getSeat().getSeatType().getPrice())
+            .isAvailable(concertSeatEntity.getSeatStatus().equals(SeatStatus.AVAILABLE))
+            .build();
     }
 
 }
