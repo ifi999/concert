@@ -1,13 +1,9 @@
 package com.hhp.concert.controller.concert;
 
 import com.hhp.concert.controller.concert.dto.*;
-import com.hhp.concert.domain.concert.Concert;
-import com.hhp.concert.domain.concert.ConcertSchedule;
-import com.hhp.concert.domain.concert.ConcertSeat;
-import com.hhp.concert.domain.concert.ConcertService;
+import com.hhp.concert.domain.concert.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -59,7 +55,9 @@ public class ConcertController {
     public ReserveSeatResponse reserve(
         @RequestBody final ReserveSeatRequest request
     ) {
-        return new ReserveSeatResponse(1L, "A1", LocalDateTime.of(2024, 7, 1, 13, 0, 0), "RESERVED");
+        final ConcertReservation reservation = concertService.reserve(request.toDomain());
+
+        return ReserveSeatResponse.from(reservation);
     }
 
     @GetMapping("/{concertId}/schedules/{scheduleId}/seats/{seatId}")

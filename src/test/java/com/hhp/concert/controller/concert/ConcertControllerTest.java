@@ -4,6 +4,10 @@ import com.hhp.concert.controller.concert.dto.ReserveSeatRequest;
 import com.hhp.concert.domain.SeatStatus;
 import com.hhp.concert.infra.concert.*;
 import com.hhp.concert.infra.concert.entity.*;
+import com.hhp.concert.infra.user.ConcertUserJpaRepository;
+import com.hhp.concert.infra.user.UserPointJpaRepository;
+import com.hhp.concert.infra.user.entity.ConcertUserEntity;
+import com.hhp.concert.infra.user.entity.UserPointEntity;
 import com.hhp.concert.util.DateTimeProvider;
 import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.Test;
@@ -38,6 +42,12 @@ class ConcertControllerTest {
 
     @Autowired
     private SeatTypeJpaRepository seatTypeJpaRepository;
+
+    @Autowired
+    private ConcertUserJpaRepository concertUserJpaRepository;
+
+    @Autowired
+    private UserPointJpaRepository userPointJpaRepository;
 
     @Autowired
     private DateTimeProvider dateTimeProvider;
@@ -213,11 +223,33 @@ class ConcertControllerTest {
     @Test
     void 좌석을_예약한다() {
         // given
-        final long 콘서트_ID = 1L;
-        final long 콘서트_스케쥴_ID = 2L;
-        final long 좌석_ID = 123L;
-        final long 사용자_ID = 456L;
-        final ReserveSeatRequest 좌석예약_요청 = new ReserveSeatRequest(콘서트_ID, 콘서트_스케쥴_ID, 좌석_ID, 사용자_ID);
+        final LocalDate 현재시간 = dateTimeProvider.currentDate();
+
+        final ConcertEntity 콘서트 = concertJpaRepository.save(new ConcertEntity(
+            "콘서트1",
+            "아티스트1",
+            "장소1",
+            현재시간.plus(7, ChronoUnit.DAYS),
+            현재시간.plus(10, ChronoUnit.DAYS)
+        ));
+
+        final ConcertScheduleEntity 스케쥴 = concertScheduleJpaRepository.save(new ConcertScheduleEntity(
+            콘서트,
+            현재시간.plus(7, ChronoUnit.DAYS),
+            현재시간.plus(7, ChronoUnit.DAYS).atTime(13, 0))
+        );
+
+        final SeatZoneEntity 좌석_구역 = seatZoneJpaRepository.save(new SeatZoneEntity("A열", 1));
+        final SeatTypeEntity 좌석_타입 = seatTypeJpaRepository.save(new SeatTypeEntity("일반석", 30_000L));
+        final SeatEntity 좌석 = seatJpaRepository.save(new SeatEntity(좌석_구역, 좌석_타입, "A1"));
+
+        final ConcertSeatEntity 콘서트_좌석 = concertSeatJpaRepository.save(new ConcertSeatEntity(콘서트, 스케쥴, 좌석, SeatStatus.AVAILABLE));
+
+        final ConcertUserEntity 사용자 = concertUserJpaRepository.save(new ConcertUserEntity("사용자1", "222@foo.bar"));
+
+        final UserPointEntity 포인트 = userPointJpaRepository.save(new UserPointEntity(사용자, 100_000L));
+
+        final ReserveSeatRequest 좌석예약_요청 = new ReserveSeatRequest(콘서트.getId(), 스케쥴.getId(), 콘서트_좌석.getId(), 사용자.getId());
 
         // when
         final JsonPath 좌석예약_응답 =
@@ -234,15 +266,13 @@ class ConcertControllerTest {
                 .jsonPath();
 
         // then
-        final long 예약_ID = 좌석예약_응답.getLong("reservationId");
         final String 예약_좌석명 = 좌석예약_응답.getString("seatName");
-        final String 예약_시간 = 좌석예약_응답.getString("reservationTime");
         final String 예약_상태 = 좌석예약_응답.getString("reservationStatus");
+        final long 예약_금액 = 좌석예약_응답.getLong("price");
 
-        assertThat(예약_ID).isEqualTo(1L);
         assertThat(예약_좌석명).isEqualTo("A1");
-        assertThat(예약_시간).isEqualTo("2024-07-01T13:00:00");
-        assertThat(예약_상태).isEqualTo("RESERVED");
+        assertThat(예약_상태).isEqualTo("PENDING");
+        assertThat(예약_금액).isEqualTo(30_000L);
     }
 
 }

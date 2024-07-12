@@ -1,5 +1,6 @@
 package com.hhp.concert.controller.concert.dto;
 
+import com.hhp.concert.domain.concert.ConcertReservation;
 import lombok.Getter;
 
 @Getter
@@ -15,6 +16,15 @@ public class ReserveSeatRequest {
         this.scheduleId = scheduleId;
         this.seatId = seatId;
         this.userId = userId;
+    }
+
+    public ConcertReservation toDomain() {
+        return new ConcertReservation(
+            this.userId,
+            this.concertId,
+            this.scheduleId,
+            this.seatId
+        );
     }
 
 }

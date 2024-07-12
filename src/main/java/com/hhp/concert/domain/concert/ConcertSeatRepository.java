@@ -8,4 +8,6 @@ public interface ConcertSeatRepository {
 
     ConcertSeat getSeatInfo(Concert concert, ConcertSchedule schedule, long seatId);
 
+    ConcertSeat getConcertSeatById(Long seatId);
+
 }

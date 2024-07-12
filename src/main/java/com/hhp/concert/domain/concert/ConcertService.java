@@ -1,5 +1,7 @@
 package com.hhp.concert.domain.concert;
 
+import com.hhp.concert.domain.user.ConcertUser;
+import com.hhp.concert.domain.user.ConcertUserRepository;
 import com.hhp.concert.util.DateTimeProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,17 +16,23 @@ public class ConcertService {
     private final ConcertRepository concertRepository;
     private final ConcertScheduleRepository concertScheduleRepository;
     private final ConcertSeatRepository concertSeatRepository;
+    private final ConcertUserRepository concertUserRepository;
+    private final ConcertReservationRepository concertReservationRepository;
     private final DateTimeProvider dateTimeProvider;
 
     public ConcertService(
         final ConcertRepository concertRepository,
         final ConcertScheduleRepository concertScheduleRepository,
         final ConcertSeatRepository concertSeatRepository,
+        final ConcertUserRepository concertUserRepository,
+        final ConcertReservationRepository concertReservationRepository,
         final DateTimeProvider dateTimeProvider
     ) {
         this.concertRepository = concertRepository;
         this.concertScheduleRepository = concertScheduleRepository;
         this.concertSeatRepository = concertSeatRepository;
+        this.concertUserRepository = concertUserRepository;
+        this.concertReservationRepository = concertReservationRepository;
         this.dateTimeProvider = dateTimeProvider;
     }
 
@@ -56,6 +64,15 @@ public class ConcertService {
         final ConcertSchedule schedule = concertScheduleRepository.getConcertScheduleById(scheduleId);
 
         return concertSeatRepository.getSeatInfo(concert, schedule, seatId);
+    }
+
+    public ConcertReservation reserve(final ConcertReservation reservation) {
+        concertRepository.getConcertById(reservation.getConcertId());
+        final ConcertUser user = concertUserRepository.getUserById(reservation.getUserId());
+        final ConcertSchedule schedule = concertScheduleRepository.getConcertScheduleById(reservation.getScheduleId());
+        final ConcertSeat seat = concertSeatRepository.getConcertSeatById(reservation.getSeatId());
+
+        return concertReservationRepository.reserve(user, schedule, seat);
     }
 
 }

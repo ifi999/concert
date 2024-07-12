@@ -33,4 +33,11 @@ public class UserPointEntity {
         this.point += point;
     }
 
+    public void decrementPoint(final Long point) {
+        if (this.point < point) {
+            throw new IllegalArgumentException("Not enough points to deduct.");
+        }
+        this.point -= point;
+    }
+
 }

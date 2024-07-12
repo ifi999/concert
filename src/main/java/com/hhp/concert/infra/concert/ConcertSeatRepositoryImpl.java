@@ -79,4 +79,21 @@ public class ConcertSeatRepositoryImpl implements ConcertSeatRepository {
             .build();
     }
 
+    @Override
+    public ConcertSeat getConcertSeatById(final Long seatId) {
+        final ConcertSeatEntity concertSeatEntity = concertSeatJpaRepository.findById(seatId)
+            .orElseThrow(() -> new EntityNotFoundException("Concert seat not found. ID: " + seatId));
+
+        return ConcertSeat.builder()
+            .concertSeatId(concertSeatEntity.getId())
+            .concertId(concertSeatEntity.getConcert().getId())
+            .scheduleId(concertSeatEntity.getConcertSchedule().getId())
+            .seatId(concertSeatEntity.getSeat().getId())
+            .zoneName(concertSeatEntity.getSeat().getSeatZone().getZoneName())
+            .seatType(concertSeatEntity.getSeat().getSeatType().getTypeName())
+            .seatName(concertSeatEntity.getSeat().getSeatName())
+            .price(concertSeatEntity.getSeat().getSeatType().getPrice())
+            .isAvailable(concertSeatEntity.getSeatStatus().equals(SeatStatus.AVAILABLE))
+            .build();
+    }
 }
