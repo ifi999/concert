@@ -33,4 +33,18 @@ public class ConcertEntity {
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
+    public ConcertEntity(
+        final String concertName,
+        final String artist,
+        final String venue,
+        final LocalDate startDate,
+        final LocalDate endDate
+    ) {
+        this.concertName = concertName;
+        this.artist = artist;
+        this.venue = venue;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
 }

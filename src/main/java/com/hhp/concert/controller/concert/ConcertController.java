@@ -1,6 +1,8 @@
 package com.hhp.concert.controller.concert;
 
 import com.hhp.concert.controller.concert.dto.*;
+import com.hhp.concert.domain.concert.Concert;
+import com.hhp.concert.domain.concert.ConcertService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -11,8 +13,16 @@ import java.util.List;
 @RequestMapping("/api/concerts")
 public class ConcertController {
 
+    private final ConcertService concertService;
+
+    public ConcertController(final ConcertService concertService) {
+        this.concertService = concertService;
+    }
+
     @GetMapping
     public List<GetConcertResponse> getConcerts() {
+        List<Concert> concerts = concertService.getConcerts();
+
         return List.of(new GetConcertResponse(
             1L,
             "콘서트",
