@@ -1,6 +1,5 @@
 package com.hhp.concert.domain.concert;
 
-import com.hhp.concert.infra.concert.entity.ConcertEntity;
 import com.hhp.concert.util.DateTimeProvider;
 import org.springframework.stereotype.Service;
 
@@ -11,31 +10,33 @@ import java.util.List;
 public class ConcertService {
 
     private final ConcertRepository concertRepository;
+    private final ConcertScheduleRepository concertScheduleRepository;
     private final DateTimeProvider dateTimeProvider;
 
-    public ConcertService(final ConcertRepository concertRepository, final DateTimeProvider dateTimeProvider) {
+    public ConcertService(
+        final ConcertRepository concertRepository,
+        final ConcertScheduleRepository concertScheduleRepository,
+        final DateTimeProvider dateTimeProvider
+    ) {
         this.concertRepository = concertRepository;
+        this.concertScheduleRepository = concertScheduleRepository;
         this.dateTimeProvider = dateTimeProvider;
     }
 
     public List<Concert> getConcerts() {
         final LocalDate currentDate = dateTimeProvider.currentDate();
-        List<ConcertEntity> concertEntities = concertRepository.getConcerts(currentDate);
 
-        return concertEntities.stream()
-            .map(o -> Concert.builder()
-                .id(o.getId())
-                .concertName(o.getConcertName())
-                .artist(o.getArtist())
-                .venue(o.getVenue())
-                .startDate(o.getStartDate())
-                .endDate(o.getEndDate())
-                .build())
-            .toList();
+        return concertRepository.getConcerts(currentDate);
     }
 
     public Concert getConcertById(final long concertId) {
         return concertRepository.getConcertById(concertId);
+    }
+
+    public List<ConcertSchedule> getConcertSchedules(final long concertId) {
+        final Concert concert = concertRepository.getConcertById(concertId);
+
+        return concertScheduleRepository.getConcertSchedulesByConcertId(concert);
     }
 
 }

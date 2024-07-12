@@ -2,7 +2,9 @@ package com.hhp.concert.controller.concert;
 
 import com.hhp.concert.controller.concert.dto.ReserveSeatRequest;
 import com.hhp.concert.infra.concert.ConcertJpaRepository;
+import com.hhp.concert.infra.concert.ConcertScheduleJpaRepository;
 import com.hhp.concert.infra.concert.entity.ConcertEntity;
+import com.hhp.concert.infra.concert.entity.ConcertScheduleEntity;
 import com.hhp.concert.util.DateTimeProvider;
 import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,9 @@ class ConcertControllerTest {
 
     @Autowired
     private ConcertJpaRepository concertJpaRepository;
+
+    @Autowired
+    private ConcertScheduleJpaRepository concertScheduleJpaRepository;
 
     @Autowired
     private DateTimeProvider dateTimeProvider;
@@ -64,14 +69,28 @@ class ConcertControllerTest {
     @Test
     void 콘서트_날짜를_조회한다() {
         // given
-        final long 콘서트_ID = 1L;
+        final LocalDate 현재시간 = dateTimeProvider.currentDate();
+
+        final ConcertEntity 콘서트 = concertJpaRepository.save(new ConcertEntity(
+            "콘서트1",
+            "아티스트1",
+            "장소1",
+            현재시간.plus(7, ChronoUnit.DAYS),
+            현재시간.plus(10, ChronoUnit.DAYS)
+        ));
+
+        concertScheduleJpaRepository.save(new ConcertScheduleEntity(
+            콘서트,
+            현재시간.plus(1, ChronoUnit.DAYS),
+            현재시간.plus(1, ChronoUnit.DAYS).atTime(13, 0))
+        );
 
         // when
         final JsonPath 날짜조회_응답 =
             given()
                 .log().all()
             .when()
-                .get("/api/concerts/{concertId}/dates", 콘서트_ID)
+                .get("/api/concerts/{concertId}/dates", 콘서트.getId())
             .then()
                 .statusCode(HttpStatus.OK.value())
                 .log().all()
@@ -81,7 +100,7 @@ class ConcertControllerTest {
         // then
         final String 콘서트_날짜 = 날짜조회_응답.getString("[0].concertDate");
 
-        assertThat(콘서트_날짜).isEqualTo("2024-07-01T12:00:00");
+        assertThat(콘서트_날짜).isEqualTo(현재시간.plus(1, ChronoUnit.DAYS).toString());
     }
 
     @Test

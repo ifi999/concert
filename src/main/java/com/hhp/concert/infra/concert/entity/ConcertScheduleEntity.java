@@ -29,4 +29,10 @@ public class ConcertScheduleEntity {
     @Column(name = "concert_time", nullable = false)
     private LocalDateTime concertTime;
 
+    public ConcertScheduleEntity(final ConcertEntity concert, final LocalDate concertDate, final LocalDateTime concertTime) {
+        this.concert = concert;
+        this.concertDate = concertDate;
+        this.concertTime = concertTime;
+    }
+
 }
