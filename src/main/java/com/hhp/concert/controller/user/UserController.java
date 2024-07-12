@@ -39,10 +39,12 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}/points/balance")
-    public GetCurrentBalanceResponse GetCurrentBalance(
+    public GetBalanceResponse getBalance(
             @PathVariable("userId") final long userId
     ) {
-        return new GetCurrentBalanceResponse(1L, 90_000L);
+        final UserPoint userPoint = userPointService.getBalance(userId);
+
+        return new GetBalanceResponse(1L, 90_000L);
     }
 
     @GetMapping("/users/{userId}/points/history")
