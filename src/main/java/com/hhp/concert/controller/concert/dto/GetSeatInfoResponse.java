@@ -1,6 +1,5 @@
 package com.hhp.concert.controller.concert.dto;
 
-import com.hhp.concert.domain.concert.SeatStatus;
 import lombok.Getter;
 
 @Getter
@@ -11,22 +10,19 @@ public class GetSeatInfoResponse {
     private Long zoneId;
     private Long typeId;
     private String seatName;
-    private SeatStatus seatStatus;
 
     public GetSeatInfoResponse(
         final Long seatId,
         final Long scheduleId,
         final Long zoneId,
         final Long typeId,
-        final String seatName,
-        final SeatStatus seatStatus
+        final String seatName
     ) {
         this.seatId = seatId;
         this.scheduleId = scheduleId;
         this.zoneId = zoneId;
         this.typeId = typeId;
         this.seatName = seatName;
-        this.seatStatus = seatStatus;
     }
 
 }

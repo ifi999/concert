@@ -5,6 +5,7 @@ import com.hhp.concert.domain.user.UserPointRepository;
 import com.hhp.concert.domain.user.ConcertUser;
 import com.hhp.concert.infra.user.entity.UserPointEntity;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -23,6 +24,18 @@ public class UserPointRepositoryImpl implements UserPointRepository {
             .orElseGet(() -> userPointJpaRepository.save(new UserPointEntity(userEntity, 0L)));
 
         userPointEntity.incrementPoint(point);
+
+        return new UserPoint(
+            userPointEntity.getId(),
+            userPointEntity.getUser().getId(),
+            userPointEntity.getPoint()
+        );
+    }
+
+    @Override
+    public UserPoint getBalance(final Long userId) {
+        final UserPointEntity userPointEntity = userPointJpaRepository.findByUserId(userId)
+            .orElseThrow(() -> new EntityNotFoundException("User's point not found. User ID: " + userId));
 
         return new UserPoint(
             userPointEntity.getId(),

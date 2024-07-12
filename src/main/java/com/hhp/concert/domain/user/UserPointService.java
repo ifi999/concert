@@ -21,4 +21,10 @@ public class UserPointService {
         return userPointRepository.charge(user, userPoint.getPoint());
     }
 
+    public UserPoint getBalance(final long userId) {
+        final ConcertUser user = concertUserRepository.getUserById(userId);
+
+        return userPointRepository.getBalance(user.getId());
+    }
+
 }

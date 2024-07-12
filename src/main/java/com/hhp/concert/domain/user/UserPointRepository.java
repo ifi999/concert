@@ -4,4 +4,6 @@ public interface UserPointRepository {
 
     UserPoint charge(ConcertUser user, Long point);
 
+    UserPoint getBalance(Long id);
+
 }

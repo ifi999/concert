@@ -1,8 +1,6 @@
 package com.hhp.concert.controller.concert;
 
 import com.hhp.concert.controller.concert.dto.*;
-import com.hhp.concert.controller.concert.dto.GetSeatInfoResponse;
-import com.hhp.concert.domain.concert.SeatStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -69,8 +67,7 @@ public class ConcertController {
                 34L,
                 56L,
                 78L,
-                "A-11",
-                SeatStatus.AVAILABLE
+                "A-11"
         );
     }
 

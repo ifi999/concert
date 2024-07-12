@@ -3,6 +3,7 @@ package com.hhp.concert.infra.user;
 import com.hhp.concert.domain.user.ConcertUser;
 import com.hhp.concert.domain.user.ConcertUserRepository;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -24,7 +25,7 @@ public class ConcertUserRepositoryImpl implements ConcertUserRepository {
     @Override
     public ConcertUser getUserById(final Long userId) {
         final ConcertUserEntity userEntity = concertUserJpaRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found. ID: " + userId));
+            .orElseThrow(() -> new EntityNotFoundException("User not found. ID: " + userId));
 
         return new ConcertUser(userEntity.getId(), userEntity.getName(), userEntity.getEmail());
     }
