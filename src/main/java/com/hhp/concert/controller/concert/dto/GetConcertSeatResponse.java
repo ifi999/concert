@@ -1,20 +1,35 @@
 package com.hhp.concert.controller.concert.dto;
 
+import com.hhp.concert.domain.concert.ConcertSeat;
+import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 @Getter
 public class GetConcertSeatResponse {
 
     private long seatId;
     private String seatName;
-    private int price;
-    private String zone;
+    private long price;
+    private String zoneName;
 
-    public GetConcertSeatResponse(final long seatId, final String seatName, final int price, final String zone) {
+    @Builder
+    public GetConcertSeatResponse(final long seatId, final String seatName, final long price, final String zoneName) {
         this.seatId = seatId;
         this.seatName = seatName;
         this.price = price;
-        this.zone = zone;
+        this.zoneName = zoneName;
     }
 
+    public static List<GetConcertSeatResponse> from(final List<ConcertSeat> concertSeats) {
+        return concertSeats.stream()
+            .map(o -> GetConcertSeatResponse.builder()
+                .seatId(o.getSeatId())
+                .seatName(o.getSeatType())
+                .price(o.getPrice())
+                .zoneName(o.getZoneName())
+                .build())
+            .toList();
+    }
 }

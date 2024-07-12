@@ -23,4 +23,9 @@ public class SeatTypeEntity {
     @Column(nullable = false)
     private Long price;
 
+    public SeatTypeEntity(final String typeName, final Long price) {
+        this.typeName = typeName;
+        this.price = price;
+    }
+
 }

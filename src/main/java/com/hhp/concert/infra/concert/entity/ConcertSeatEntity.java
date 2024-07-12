@@ -21,7 +21,17 @@ public class ConcertSeatEntity {
     private ConcertEntity concert;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id", nullable = false)
+    private ConcertScheduleEntity concertSchedule;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seat_id", nullable = false)
     private SeatEntity seat;
+
+    public ConcertSeatEntity(final ConcertEntity concert, final ConcertScheduleEntity concertSchedule, final SeatEntity seat) {
+        this.concert = concert;
+        this.concertSchedule = concertSchedule;
+        this.seat = seat;
+    }
 
 }

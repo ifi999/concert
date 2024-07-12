@@ -27,4 +27,10 @@ public class SeatEntity {
     @Column(name = "seat_name", nullable = false)
     private String seatName;
 
+    public SeatEntity(final SeatZoneEntity seatZone, final SeatTypeEntity seatType, final String seatName) {
+        this.seatZone = seatZone;
+        this.seatType = seatType;
+        this.seatName = seatName;
+    }
+
 }
