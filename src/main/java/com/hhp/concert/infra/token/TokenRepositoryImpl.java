@@ -62,4 +62,26 @@ public class TokenRepositoryImpl implements TokenRepository {
             .build();
     }
 
+    @Override
+    public Token renewToken(final Long tokenId) {
+        final LocalDateTime currentDateTime = dateTimeProvider.currentDateTime();
+
+        final TokenEntity tokenEntity = tokenJpaRepository.findPendingToken(currentDateTime, currentDateTime.minusMinutes(5), tokenId)
+            .orElseThrow(() -> new EntityNotFoundException("Token not found. ID: " + tokenId));
+
+        final List<Long> oldestPendingTokenList = tokenJpaRepository.findOldestPendingToken(currentDateTime, currentDateTime.minusMinutes(5));
+        final Long oldestPendingTokenId = oldestPendingTokenList.isEmpty() ? tokenEntity.getId() : oldestPendingTokenList.get(0);
+
+        tokenEntity.validEntry(oldestPendingTokenId);
+
+        return Token.builder()
+            .tokenId(tokenEntity.getId())
+            .userId(tokenEntity.getUser().getId())
+            .token(tokenEntity.getToken())
+            .tokenStatus(tokenEntity.getTokenStatus())
+            .createdAt(tokenEntity.getCreatedAt())
+            .queueNumber(oldestPendingTokenId - tokenEntity.getId())
+            .build();
+    }
+
 }

@@ -36,4 +36,18 @@ public interface TokenJpaRepository extends JpaRepository<TokenEntity, Long> {
     """)
     List<Long> findOldestPendingToken(@Param("now") LocalDateTime now, @Param("fiveMinutesAgo") LocalDateTime fiveMinutesAgo);
 
+    @Query("""
+        SELECT t
+          FROM TokenEntity  t
+         WHERE t.id = :tokenId
+           AND t.createdAt <= :now
+           AND t.createdAt >= :fiveMinutesAgo
+           AND t.tokenStatus = 'PENDING'
+    """)
+    Optional<TokenEntity> findPendingToken(
+        @Param("now") LocalDateTime now,
+        @Param("fiveMinutesAgo") LocalDateTime fiveMinutesAgo,
+        @Param("tokenId") Long tokenId
+    );
+
 }

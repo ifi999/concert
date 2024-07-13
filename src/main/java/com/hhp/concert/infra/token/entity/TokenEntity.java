@@ -51,4 +51,10 @@ public class TokenEntity {
         this.createdAt = createdAt;
     }
 
+    public void validEntry(final Long oldestPendingTokenId) {
+        if (oldestPendingTokenId.equals(this.id)) {
+            this.tokenStatus = TokenStatus.ACTIVE;
+        }
+    }
+
 }

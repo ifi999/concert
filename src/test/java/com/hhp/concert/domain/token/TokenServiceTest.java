@@ -44,4 +44,25 @@ class TokenServiceTest {
         assertThat(토큰.getQueueNumber()).isEqualTo(0L);
     }
 
+    @Test
+    void 토큰_갱신_시_대기열_번호가_0이라면_토큰이_활성화_된다() {
+        // given
+        given(tokenRepository.renewToken(1L))
+            .willReturn(new Token(
+                1L,
+                123L,
+                "token",
+                TokenStatus.ACTIVE,
+                0L,
+                LocalDateTime.of(2024, 7, 13, 10, 15, 23)
+            )
+        );
+
+        // when
+        final Token 토큰 = tokenService.renewToken(1L);
+
+        // then
+        assertThat(토큰.getTokenStatus()).isEqualTo(TokenStatus.ACTIVE);
+    }
+
 }
