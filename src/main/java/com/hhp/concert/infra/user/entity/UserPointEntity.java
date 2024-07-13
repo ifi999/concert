@@ -1,6 +1,5 @@
 package com.hhp.concert.infra.user.entity;
 
-import com.hhp.concert.infra.user.entity.ConcertUserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -33,11 +32,16 @@ public class UserPointEntity {
         this.point += point;
     }
 
-    public void decrementPoint(final Long point) {
-        if (this.point < point) {
+    public void decrementPoint(final Long reservedPrice, final Long amount) {
+        if (!reservedPrice.equals(amount)) {
+            throw new IllegalArgumentException("Payment amount does not match the requested deduction amount.");
+        }
+
+        if (this.point < amount) {
             throw new IllegalArgumentException("Not enough points to deduct.");
         }
-        this.point -= point;
+
+        this.point -= amount;
     }
 
 }

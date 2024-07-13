@@ -34,4 +34,11 @@ public class PaymentEntity {
     @Column(name = "create_at", nullable = false)
     private LocalDateTime createdAt;
 
+    public PaymentEntity(final ConcertUserEntity user, final ConcertReservationEntity reservation, final Long paymentPrice) {
+        this.user = user;
+        this.reservation = reservation;
+        this.paymentPrice = paymentPrice;
+        this.createdAt = LocalDateTime.now();
+    }
+
 }

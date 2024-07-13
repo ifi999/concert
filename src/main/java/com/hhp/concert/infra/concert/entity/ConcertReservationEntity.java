@@ -36,6 +36,7 @@ public class ConcertReservationEntity {
     @Column(name = "reservation_price", nullable = false)
     private Long reservationPrice;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "reservation_status", nullable = false)
     private ConcertReservationStatus reservationStatus;
 
@@ -56,6 +57,14 @@ public class ConcertReservationEntity {
         this.reservationPrice = reservationPrice;
         this.reservationStatus = reservationStatus;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public void completeReservation() {
+        if (this.reservationStatus != ConcertReservationStatus.PENDING) {
+            throw new IllegalStateException("Reservation status must be WAITING to complete it");
+        }
+
+        this.reservationStatus = ConcertReservationStatus.CONFIRMED;
     }
 
 }
