@@ -15,4 +15,8 @@ public class TokenService {
         return tokenRepository.getTokenByUserId(token.getUserId());
     }
 
+    public Token renewToken(final Long tokenId) {
+        return tokenRepository.renewToken(tokenId);
+    }
+
 }

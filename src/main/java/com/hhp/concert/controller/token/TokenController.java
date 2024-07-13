@@ -29,8 +29,10 @@ public class TokenController {
 
     @PatchMapping("/tokens/{tokenId}")
     public RenewTokenResponse renewToken(
-            @PathVariable final String tokenId
+            @PathVariable final Long tokenId
     ) {
+        final Token token = tokenService.renewToken(tokenId);
+
         return new RenewTokenResponse(123L, 456L, "token", TokenStatus.PENDING, 123);
     }
 
