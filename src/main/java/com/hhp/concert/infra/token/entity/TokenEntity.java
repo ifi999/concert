@@ -4,6 +4,7 @@ import com.hhp.concert.domain.token.TokenStatus;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,13 +28,27 @@ public class TokenEntity {
     @Column(nullable = false)
     private String token;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "token_status", nullable = false)
     private TokenStatus tokenStatus;
 
     @Column(name = "create_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "entry_time", nullable = false)
+    @Column(name = "entry_time")
     private LocalDateTime entryTime;
+
+    @Builder
+    public TokenEntity(
+        final ConcertUserEntity user,
+        final String token,
+        final TokenStatus tokenStatus,
+        final LocalDateTime createdAt
+    ) {
+        this.user = user;
+        this.token = token;
+        this.tokenStatus = tokenStatus;
+        this.createdAt = createdAt;
+    }
 
 }

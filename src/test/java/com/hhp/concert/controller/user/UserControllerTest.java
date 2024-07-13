@@ -29,7 +29,8 @@ class UserControllerTest {
     @Test
     void 토큰을_발급받는다() {
         // given
-        final long 사용자_ID = 1L;
+        final ConcertUserEntity 사용자_엔티티 = concertUserJpaRepository.save(new ConcertUserEntity("사용자1", "222@foo.bar"));
+        final long 사용자_ID = 사용자_엔티티.getId();
         final GetTokenRequest 토큰발급_요청 = new GetTokenRequest(사용자_ID);
 
         // when
@@ -48,10 +49,10 @@ class UserControllerTest {
 
         // then
         final long 응답_사용자_ID = 토큰발급_응답.getLong("userId");
-        final String 응답_사용자_토큰 = 토큰발급_응답.getString("token");
+        final String 응답_토큰_상태 = 토큰발급_응답.getString("tokenStatus");
 
-        assertThat(응답_사용자_ID).isEqualTo(123L);
-        assertThat(응답_사용자_토큰).isEqualTo("token");
+        assertThat(응답_사용자_ID).isEqualTo(사용자_ID);
+        assertThat(응답_토큰_상태).isEqualTo("PENDING");
     }
 
     @Test
