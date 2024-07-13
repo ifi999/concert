@@ -1,10 +1,10 @@
 package com.hhp.concert.controller.payment.dto;
 
+import com.hhp.concert.domain.payment.Payment;
 import lombok.Getter;
 
 @Getter
-public class
-PayReservationRequest {
+public class PayReservationRequest {
 
     private long reservationId;
     private long userId;
@@ -14,6 +14,10 @@ PayReservationRequest {
         this.reservationId = reservationId;
         this.userId = userId;
         this.paymentAmount = paymentAmount;
+    }
+
+    public Payment toDomain() {
+        return new Payment(this.reservationId, this.userId, this.paymentAmount);
     }
 
 }

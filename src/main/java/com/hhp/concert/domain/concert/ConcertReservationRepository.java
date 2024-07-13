@@ -6,4 +6,6 @@ public interface ConcertReservationRepository {
 
     ConcertReservation reserve(ConcertUser user, ConcertSchedule schedule, ConcertSeat seat);
 
+    ConcertReservation getReservationById(Long reservationId);
+
 }
