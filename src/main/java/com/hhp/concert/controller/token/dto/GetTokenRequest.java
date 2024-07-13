@@ -1,5 +1,6 @@
 package com.hhp.concert.controller.token.dto;
 
+import com.hhp.concert.domain.token.Token;
 import lombok.Getter;
 
 @Getter
@@ -14,4 +15,7 @@ public class GetTokenRequest {
         this.userId = userId;
     }
 
+    public Token toDomain() {
+        return new Token(this.userId);
+    }
 }
