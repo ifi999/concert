@@ -71,6 +71,8 @@ public class ConcertService {
         final ConcertUser user = concertUserRepository.getUserById(reservation.getUserId());
         final ConcertSchedule schedule = concertScheduleRepository.getConcertScheduleById(reservation.getScheduleId());
         final ConcertSeat seat = concertSeatRepository.getConcertSeatById(reservation.getSeatId());
+        seat.reserve();
+        concertSeatRepository.updateSeat(seat);
 
         return concertReservationRepository.reserve(user, schedule, seat);
     }

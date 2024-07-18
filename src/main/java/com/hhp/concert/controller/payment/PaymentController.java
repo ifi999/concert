@@ -7,7 +7,6 @@ import com.hhp.concert.domain.payment.Payment;
 import com.hhp.concert.domain.payment.PaymentService;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -33,13 +32,9 @@ public class PaymentController {
     public List<GetUserPaymentResponse> getUserPayments(
         @PathVariable final long userId
     ) {
-        return List.of(new GetUserPaymentResponse(
-            123L,
-            789L,
-            456L,
-            30_000L,
-            LocalDateTime.of(2024, 7, 1, 13, 0, 0))
-        );
+        final List<Payment> payments = paymentService.getUserPayments(userId);
+
+        return GetUserPaymentResponse.from(payments);
     }
 
 }

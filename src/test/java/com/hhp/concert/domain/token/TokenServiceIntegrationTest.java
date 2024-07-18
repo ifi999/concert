@@ -54,7 +54,7 @@ public class TokenServiceIntegrationTest {
 
         final LocalDateTime 현재시간 = dateTimeProvider.currentDateTime();
         final String UUID_토큰 = tokenProvider.generateToken();
-        final TokenEntity 기존_토큰 = tokenJpaRepository.save(new TokenEntity(사용자_엔티티, UUID_토큰, TokenStatus.PENDING, 현재시간.minusMinutes(10)));
+        final TokenEntity 기존_토큰 = tokenJpaRepository.save(new TokenEntity(사용자_엔티티, UUID_토큰, 현재시간.minusMinutes(10)));
         System.out.println("기존_토큰.getToken() = " + 기존_토큰.getToken());
 
         // when

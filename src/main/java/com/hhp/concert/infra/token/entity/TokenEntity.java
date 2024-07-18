@@ -1,6 +1,5 @@
 package com.hhp.concert.infra.token.entity;
 
-import com.hhp.concert.domain.token.TokenStatus;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -28,33 +27,25 @@ public class TokenEntity {
     @Column(nullable = false)
     private String token;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "token_status", nullable = false)
-    private TokenStatus tokenStatus;
-
     @Column(name = "create_at", nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "entry_time")
     private LocalDateTime entryTime;
 
+    @Column(name = "last_active_time")
+    private LocalDateTime lastActiveTime;
+
     @Builder
     public TokenEntity(
         final ConcertUserEntity user,
         final String token,
-        final TokenStatus tokenStatus,
         final LocalDateTime createdAt
     ) {
         this.user = user;
         this.token = token;
-        this.tokenStatus = tokenStatus;
         this.createdAt = createdAt;
     }
 
-    public void validEntry(final Long oldestPendingTokenId) {
-        if (oldestPendingTokenId.equals(this.id)) {
-            this.tokenStatus = TokenStatus.ACTIVE;
-        }
-    }
 
 }

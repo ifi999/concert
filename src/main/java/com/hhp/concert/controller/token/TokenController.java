@@ -5,7 +5,6 @@ import com.hhp.concert.controller.token.dto.GetTokenResponse;
 import com.hhp.concert.controller.token.dto.RenewTokenResponse;
 import com.hhp.concert.domain.token.Token;
 import com.hhp.concert.domain.token.TokenService;
-import com.hhp.concert.domain.token.TokenStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,7 +32,7 @@ public class TokenController {
     ) {
         final Token token = tokenService.renewToken(tokenId);
 
-        return new RenewTokenResponse(123L, 456L, "token", TokenStatus.PENDING, 123);
+        return RenewTokenResponse.from(token);
     }
 
 }

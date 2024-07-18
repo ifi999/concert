@@ -10,4 +10,6 @@ public interface ConcertSeatRepository {
 
     ConcertSeat getConcertSeatById(Long seatId);
 
+    ConcertSeat updateSeat(ConcertSeat seat);
+
 }

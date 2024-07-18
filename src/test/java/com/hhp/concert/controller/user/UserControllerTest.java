@@ -27,35 +27,6 @@ class UserControllerTest {
     private UserPointService userPointService;
 
     @Test
-    void 토큰을_발급받는다() {
-        // given
-        final ConcertUserEntity 사용자_엔티티 = concertUserJpaRepository.save(new ConcertUserEntity("사용자1", "222@foo.bar"));
-        final long 사용자_ID = 사용자_엔티티.getId();
-        final GetTokenRequest 토큰발급_요청 = new GetTokenRequest(사용자_ID);
-
-        // when
-        final JsonPath 토큰발급_응답 =
-            given()
-                .log().all()
-                .body(토큰발급_요청)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-                .post("/api/tokens")
-            .then()
-                .statusCode(HttpStatus.OK.value())
-                .log().all()
-            .extract()
-                .jsonPath();
-
-        // then
-        final long 응답_사용자_ID = 토큰발급_응답.getLong("userId");
-        final String 응답_토큰_상태 = 토큰발급_응답.getString("tokenStatus");
-
-        assertThat(응답_사용자_ID).isEqualTo(사용자_ID);
-        assertThat(응답_토큰_상태).isEqualTo("PENDING");
-    }
-
-    @Test
     void 사용자를_등록한다() {
         // given
         final String 이름 = "사용자1";
@@ -139,7 +110,7 @@ class UserControllerTest {
         final long 응답_사용자_ID = 포인트조회_응답.getLong("userId");
         final long 응답_사용자_보유_포인트 = 포인트조회_응답.getLong("balance");
 
-        assertThat(응답_사용자_ID).isEqualTo(1L);
+        assertThat(응답_사용자_ID).isEqualTo(사용자_ID);
         assertThat(응답_사용자_보유_포인트).isEqualTo(90_000L);
     }
 

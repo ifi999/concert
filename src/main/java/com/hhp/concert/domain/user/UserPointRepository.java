@@ -6,4 +6,8 @@ public interface UserPointRepository {
 
     UserPoint getBalance(Long id);
 
+    UserPoint getUserPointByUserId(Long userId);
+
+    UserPoint updateUserPoint(UserPoint userPoint);
+
 }

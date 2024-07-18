@@ -2,6 +2,7 @@ package com.hhp.concert.infra.concert;
 
 import com.hhp.concert.domain.concert.*;
 import com.hhp.concert.domain.user.ConcertUser;
+import com.hhp.concert.infra.concert.entity.ConcertEntity;
 import com.hhp.concert.infra.concert.entity.ConcertReservationEntity;
 import com.hhp.concert.infra.concert.entity.ConcertScheduleEntity;
 import com.hhp.concert.infra.concert.entity.ConcertSeatEntity;
@@ -14,17 +15,20 @@ import org.springframework.stereotype.Repository;
 public class ConcertReservationRepositoryImpl implements ConcertReservationRepository {
 
     private final ConcertUserJpaRepository concertUserJpaRepository;
+    private final ConcertJpaRepository concertJpaRepository;
     private final ConcertScheduleJpaRepository concertScheduleJpaRepository;
     private final ConcertSeatJpaRepository concertSeatJpaRepository;
     private final ConcertReservationJpaRepository concertReservationJpaRepository;
 
     public ConcertReservationRepositoryImpl(
         final ConcertUserJpaRepository concertUserJpaRepository,
+        final ConcertJpaRepository concertJpaRepository,
         final ConcertScheduleJpaRepository concertScheduleJpaRepository,
         final ConcertSeatJpaRepository concertSeatJpaRepository,
         final ConcertReservationJpaRepository concertReservationJpaRepository
     ) {
         this.concertUserJpaRepository = concertUserJpaRepository;
+        this.concertJpaRepository = concertJpaRepository;
         this.concertScheduleJpaRepository = concertScheduleJpaRepository;
         this.concertSeatJpaRepository = concertSeatJpaRepository;
         this.concertReservationJpaRepository = concertReservationJpaRepository;
@@ -34,12 +38,12 @@ public class ConcertReservationRepositoryImpl implements ConcertReservationRepos
     public ConcertReservation reserve(final ConcertUser user, final ConcertSchedule schedule, final ConcertSeat seat) {
         final ConcertUserEntity userEntity = concertUserJpaRepository.findById(user.getId())
             .orElseThrow(() -> new EntityNotFoundException("User not found. ID: " + user.getId()));
+        final ConcertEntity concertEntity = concertJpaRepository.findById(schedule.getConcertId())
+            .orElseThrow(() -> new EntityNotFoundException("Concert not found. ID: " + schedule.getConcertId()));
         final ConcertScheduleEntity concertScheduleEntity = concertScheduleJpaRepository.findById(schedule.getConcertScheduleId())
             .orElseThrow(() -> new EntityNotFoundException("Concert's schedule not found. ID: " + schedule.getConcertScheduleId()));
-        final ConcertSeatEntity concertSeatEntity = concertSeatJpaRepository.findBySeatIdWithLock(seat.getSeatId())
+        final ConcertSeatEntity concertSeatEntity = concertSeatJpaRepository.findById(seat.getSeatId())
             .orElseThrow(() -> new EntityNotFoundException("Concert's seat not found. ID: " + seat.getSeatId()));
-
-        concertSeatEntity.reserve();
 
         final ConcertReservationEntity concertReservationEntity = ConcertReservationEntity.builder()
             .user(userEntity)
@@ -54,6 +58,7 @@ public class ConcertReservationRepositoryImpl implements ConcertReservationRepos
         return ConcertReservation.builder()
             .reservationId(savedConcertReservation.getId())
             .userId(savedConcertReservation.getUser().getId())
+            .concertId(concertEntity.getId())
             .scheduleId(savedConcertReservation.getSchedule().getId())
             .seatId(savedConcertReservation.getConcertSeat().getId())
             .seatName(savedConcertReservation.getConcertSeat().getSeat().getSeatName())
@@ -65,18 +70,57 @@ public class ConcertReservationRepositoryImpl implements ConcertReservationRepos
 
     @Override
     public ConcertReservation getReservationById(final Long reservationId) {
-        final ConcertReservationEntity concertReservationEntity = concertReservationJpaRepository.findById(reservationId)
+        final ConcertReservationEntity concertReservationEntity = concertReservationJpaRepository.findByIdWithLock(reservationId)
             .orElseThrow(() -> new EntityNotFoundException("Concert's reservation not found. ID: " + reservationId));
+
+        final ConcertEntity concertEntity = concertJpaRepository.findById(concertReservationEntity.getSchedule().getConcert().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Concert not found. ID: " + concertReservationEntity.getSchedule().getConcert().getId()));
 
         return ConcertReservation.builder()
             .reservationId(concertReservationEntity.getId())
             .userId(concertReservationEntity.getUser().getId())
+            .concertId(concertEntity.getId())
             .scheduleId(concertReservationEntity.getSchedule().getId())
             .seatId(concertReservationEntity.getConcertSeat().getId())
             .seatName(concertReservationEntity.getConcertSeat().getSeat().getSeatName())
             .price(concertReservationEntity.getReservationPrice())
             .reservationStatus(concertReservationEntity.getReservationStatus())
             .createdAt(concertReservationEntity.getCreatedAt())
+            .build();
+    }
+
+    @Override
+    public ConcertReservation updateConcertReservation(final ConcertReservation reservation) {
+        final ConcertUserEntity userEntity = concertUserJpaRepository.findById(reservation.getUserId())
+            .orElseThrow(() -> new EntityNotFoundException("User not found. ID: " + reservation.getUserId()));
+        final ConcertEntity concertEntity = concertJpaRepository.findById(reservation.getConcertId())
+            .orElseThrow(() -> new EntityNotFoundException("Concert not found. ID: " + reservation.getConcertId()));
+        final ConcertScheduleEntity concertScheduleEntity = concertScheduleJpaRepository.findById(reservation.getScheduleId())
+            .orElseThrow(() -> new EntityNotFoundException("Concert's schedule not found. ID: " + reservation.getScheduleId()));
+        final ConcertSeatEntity concertSeatEntity = concertSeatJpaRepository.findById(reservation.getSeatId())
+            .orElseThrow(() -> new EntityNotFoundException("Concert's seat not found. ID: " + reservation.getSeatId()));
+
+        final ConcertReservationEntity reservationEntity = ConcertReservationEntity.builder()
+            .id(reservation.getReservationId())
+            .user(userEntity)
+            .schedule(concertScheduleEntity)
+            .concertSeat(concertSeatEntity)
+            .reservationPrice(reservation.getPrice())
+            .reservationStatus(reservation.getReservationStatus())
+            .build();
+
+        final ConcertReservationEntity savedReservationEntity = concertReservationJpaRepository.save(reservationEntity);
+
+        return ConcertReservation.builder()
+            .reservationId(savedReservationEntity.getId())
+            .userId(savedReservationEntity.getUser().getId())
+            .concertId(concertEntity.getId())
+            .scheduleId(savedReservationEntity.getSchedule().getId())
+            .seatId(savedReservationEntity.getConcertSeat().getId())
+            .seatName(savedReservationEntity.getConcertSeat().getSeat().getSeatName())
+            .price(savedReservationEntity.getReservationPrice())
+            .reservationStatus(savedReservationEntity.getReservationStatus())
+            .createdAt(savedReservationEntity.getCreatedAt())
             .build();
     }
 

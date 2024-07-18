@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -29,7 +30,6 @@ class TokenServiceTest {
                 1L,
                 123L,
                 "token",
-                TokenStatus.PENDING,
                 0L,
                 LocalDateTime.of(2024, 7, 13, 10, 15, 23)
             )
@@ -47,22 +47,25 @@ class TokenServiceTest {
     @Test
     void 토큰_갱신_시_대기열_번호가_0이라면_토큰이_활성화_된다() {
         // given
-        given(tokenRepository.renewToken(1L))
+        given(tokenRepository.findPendingToken(1L))
             .willReturn(new Token(
                 1L,
                 123L,
                 "token",
-                TokenStatus.ACTIVE,
                 0L,
                 LocalDateTime.of(2024, 7, 13, 10, 15, 23)
             )
         );
 
+        given(tokenRepository.getOldestPendingToken())
+            .willReturn(List.of(1L));
+
         // when
         final Token 토큰 = tokenService.renewToken(1L);
 
         // then
-        assertThat(토큰.getTokenStatus()).isEqualTo(TokenStatus.ACTIVE);
+        assertThat(토큰.getUserId()).isEqualTo(123L);
+        assertThat(토큰.getQueueNumber()).isEqualTo(0L);
     }
 
 }

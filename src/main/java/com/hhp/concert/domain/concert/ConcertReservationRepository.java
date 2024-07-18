@@ -8,4 +8,6 @@ public interface ConcertReservationRepository {
 
     ConcertReservation getReservationById(Long reservationId);
 
+    ConcertReservation updateConcertReservation(ConcertReservation reservation);
+
 }

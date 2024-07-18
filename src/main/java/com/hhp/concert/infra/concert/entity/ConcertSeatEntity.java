@@ -3,6 +3,7 @@ package com.hhp.concert.infra.concert.entity;
 import com.hhp.concert.domain.SeatStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -39,8 +40,13 @@ public class ConcertSeatEntity {
         this.seat = seat;
         this.seatStatus = seatStatus;
     }
-
-    public void reserve() {
-        this.seatStatus = SeatStatus.RESERVED;
+    @Builder
+    public ConcertSeatEntity(final Long id, final ConcertEntity concert, final ConcertScheduleEntity concertSchedule, final SeatEntity seat, final SeatStatus seatStatus) {
+        this.id = id;
+        this.concert = concert;
+        this.concertSchedule = concertSchedule;
+        this.seat = seat;
+        this.seatStatus = seatStatus;
     }
+
 }
