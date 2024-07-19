@@ -4,7 +4,7 @@ import com.hhp.concert.domain.SeatStatus;
 import com.hhp.concert.domain.user.ConcertUser;
 import com.hhp.concert.domain.user.ConcertUserRepository;
 import com.hhp.concert.infra.concert.ConcertJpaRepository;
-import com.hhp.concert.util.DateTimeProvider;
+import com.hhp.concert.support.util.DateTimeProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

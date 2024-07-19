@@ -7,7 +7,7 @@ import com.hhp.concert.domain.user.UserPoint;
 import com.hhp.concert.domain.user.UserPointService;
 import com.hhp.concert.infra.concert.*;
 import com.hhp.concert.infra.concert.entity.*;
-import com.hhp.concert.util.DateTimeProvider;
+import com.hhp.concert.support.util.DateTimeProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

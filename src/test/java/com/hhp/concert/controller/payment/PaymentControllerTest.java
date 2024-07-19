@@ -11,7 +11,7 @@ import com.hhp.concert.infra.user.ConcertUserJpaRepository;
 import com.hhp.concert.infra.user.UserPointJpaRepository;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
 import com.hhp.concert.infra.user.entity.UserPointEntity;
-import com.hhp.concert.util.DateTimeProvider;
+import com.hhp.concert.support.util.DateTimeProvider;
 import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
