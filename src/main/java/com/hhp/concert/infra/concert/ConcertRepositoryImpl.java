@@ -3,7 +3,8 @@ package com.hhp.concert.infra.concert;
 import com.hhp.concert.domain.concert.Concert;
 import com.hhp.concert.domain.concert.ConcertRepository;
 import com.hhp.concert.infra.concert.entity.ConcertEntity;
-import jakarta.persistence.EntityNotFoundException;
+import com.hhp.concert.support.exception.ConcertException;
+import com.hhp.concert.support.exception.ExceptionCode;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -37,7 +38,7 @@ public class ConcertRepositoryImpl implements ConcertRepository {
     @Override
     public Concert getConcertById(final long concertId) {
         final ConcertEntity concertEntity = concertJpaRepository.findById(concertId)
-            .orElseThrow(() -> new EntityNotFoundException("Concert not found. ID: " + concertId));
+            .orElseThrow(() -> new ConcertException(ExceptionCode.CONCERT_NOT_FOUND));
 
         return Concert.builder()
             .id(concertEntity.getId())

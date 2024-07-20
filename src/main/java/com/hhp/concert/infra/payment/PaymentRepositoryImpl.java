@@ -9,7 +9,8 @@ import com.hhp.concert.infra.concert.entity.ConcertReservationEntity;
 import com.hhp.concert.infra.payment.entity.PaymentEntity;
 import com.hhp.concert.infra.user.ConcertUserJpaRepository;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
-import jakarta.persistence.EntityNotFoundException;
+import com.hhp.concert.support.exception.ConcertException;
+import com.hhp.concert.support.exception.ExceptionCode;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -34,9 +35,9 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     @Override
     public Payment pay(final ConcertUser user, final ConcertReservation reservation, final Long paymentAmount) {
         final ConcertUserEntity userEntity = concertUserJpaRepository.findById(user.getId())
-            .orElseThrow(() -> new EntityNotFoundException("User not found. ID: " + user.getId()));
+            .orElseThrow(() -> new ConcertException(ExceptionCode.USER_NOT_FOUND));
         final ConcertReservationEntity concertReservationEntity = concertReservationJpaRepository.findById(reservation.getReservationId())
-            .orElseThrow(() -> new EntityNotFoundException("Concert's reservation not found. ID: " + reservation.getReservationId()));
+            .orElseThrow(() -> new ConcertException(ExceptionCode.RESERVATION_NOT_FOUND));
 
         final PaymentEntity paymentEntity = paymentJpaRepository.save(new PaymentEntity(
             userEntity,
@@ -56,7 +57,7 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     @Override
     public List<Payment> getUserPayments(final ConcertUser user) {
         final ConcertUserEntity userEntity = concertUserJpaRepository.findById(user.getId())
-            .orElseThrow(() -> new EntityNotFoundException("User not found. ID: " + user.getId()));
+            .orElseThrow(() -> new ConcertException(ExceptionCode.USER_NOT_FOUND));
 
         final List<PaymentEntity> paymentEntities = paymentJpaRepository.findAllByUser(userEntity);
 

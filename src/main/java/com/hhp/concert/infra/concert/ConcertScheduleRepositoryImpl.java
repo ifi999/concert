@@ -5,7 +5,8 @@ import com.hhp.concert.domain.concert.ConcertSchedule;
 import com.hhp.concert.domain.concert.ConcertScheduleRepository;
 import com.hhp.concert.infra.concert.entity.ConcertEntity;
 import com.hhp.concert.infra.concert.entity.ConcertScheduleEntity;
-import jakarta.persistence.EntityNotFoundException;
+import com.hhp.concert.support.exception.ConcertException;
+import com.hhp.concert.support.exception.ExceptionCode;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class ConcertScheduleRepositoryImpl implements ConcertScheduleRepository 
     @Override
     public ConcertSchedule getConcertScheduleById(final long scheduleId) {
         final ConcertScheduleEntity concertScheduleEntity = concertScheduleJpaRepository.findById(scheduleId)
-            .orElseThrow(() -> new EntityNotFoundException("Concert's schedule not found. ID: " + scheduleId));
+            .orElseThrow(() -> new ConcertException(ExceptionCode.CONCERT_SCHEDULE_NOT_FOUND));
 
         return ConcertSchedule.builder()
             .concertScheduleId(concertScheduleEntity.getId())
