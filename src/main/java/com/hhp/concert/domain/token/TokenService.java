@@ -1,6 +1,7 @@
 package com.hhp.concert.domain.token;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -41,6 +42,10 @@ public class TokenService {
             .createdAt(pendingToken.getCreatedAt())
             .queueNumber(pendingToken.getQueueNumber())
             .build();
+    }
+
+    public boolean auth(final String token) {
+        return tokenRepository.auth(token);
     }
 
 }

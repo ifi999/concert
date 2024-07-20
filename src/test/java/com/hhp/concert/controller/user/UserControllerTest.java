@@ -5,14 +5,20 @@ import com.hhp.concert.controller.user.dto.EnrollConcertUserRequest;
 import com.hhp.concert.controller.token.dto.GetTokenRequest;
 import com.hhp.concert.domain.user.UserPoint;
 import com.hhp.concert.domain.user.UserPointService;
+import com.hhp.concert.infra.token.TokenJpaRepository;
+import com.hhp.concert.infra.token.entity.TokenEntity;
 import com.hhp.concert.infra.user.ConcertUserJpaRepository;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
 import io.restassured.path.json.JsonPath;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +32,21 @@ class UserControllerTest {
     @Autowired
     private UserPointService userPointService;
 
+    @Autowired
+    private TokenJpaRepository tokenJpaRepository;
+
+    private String authToken;
+
+    @BeforeEach
+    void setUp() {
+        final ConcertUserEntity 사용자 = new ConcertUserEntity("사용자", "222@foo.bar");
+        concertUserJpaRepository.save(사용자);
+
+        authToken = UUID.randomUUID().toString();
+        final TokenEntity 토큰 = new TokenEntity(사용자, authToken, LocalDateTime.now());
+        tokenJpaRepository.save(토큰);
+    }
+
     @Test
     void 사용자를_등록한다() {
         // given
@@ -37,6 +58,7 @@ class UserControllerTest {
         final JsonPath 사용자등록_응답 =
             given()
                 .log().all()
+                .header("Authorization", authToken)
                 .body(사용자등록_요청)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
@@ -68,6 +90,7 @@ class UserControllerTest {
         final JsonPath 포인트충전_응답 =
             given()
                 .log().all()
+                .header("Authorization", authToken)
                 .body(충전_요청)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
@@ -98,6 +121,7 @@ class UserControllerTest {
         final JsonPath 포인트조회_응답 =
             given()
                 .log().all()
+                .header("Authorization", authToken)
             .when()
                 .get("/api/users/{userId}/points/balance", 사용자_ID)
             .then()

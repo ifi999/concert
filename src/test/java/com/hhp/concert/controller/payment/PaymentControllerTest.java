@@ -7,6 +7,8 @@ import com.hhp.concert.infra.concert.*;
 import com.hhp.concert.infra.concert.entity.*;
 import com.hhp.concert.infra.payment.PaymentJpaRepository;
 import com.hhp.concert.infra.payment.entity.PaymentEntity;
+import com.hhp.concert.infra.token.TokenJpaRepository;
+import com.hhp.concert.infra.token.entity.TokenEntity;
 import com.hhp.concert.infra.user.ConcertUserJpaRepository;
 import com.hhp.concert.infra.user.UserPointJpaRepository;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
@@ -21,7 +23,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,11 +66,17 @@ class PaymentControllerTest {
     @Autowired
     private PaymentJpaRepository paymentJpaRepository;
 
+    @Autowired
+    private TokenJpaRepository tokenJpaRepository;
+
     private ConcertUserEntity 사용자;
     private ConcertReservationEntity 예약;
 
+    private String authToken;
+
     @BeforeEach
     void setUp() {
+        //
         final LocalDate 현재시간 = dateTimeProvider.currentDate();
 
         final ConcertEntity 콘서트 = concertJpaRepository.save(new ConcertEntity(
@@ -102,6 +112,10 @@ class PaymentControllerTest {
                 ConcertReservationStatus.PENDING
             )
         );
+
+        authToken = UUID.randomUUID().toString();
+        final TokenEntity 토큰 = new TokenEntity(사용자, authToken, LocalDateTime.now());
+        tokenJpaRepository.save(토큰);
     }
 
     @Test
@@ -113,6 +127,7 @@ class PaymentControllerTest {
         final JsonPath 결제예약_응답 =
             given()
                 .log().all()
+                .header("Authorization", authToken)
                 .body(결제_요청)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
@@ -142,6 +157,7 @@ class PaymentControllerTest {
         final JsonPath 결제목록_응답 =
             given()
                 .log().all()
+                .header("Authorization", authToken)
             .when()
                 .get("/api/users/{userId}/payments", 사용자.getId())
             .then()

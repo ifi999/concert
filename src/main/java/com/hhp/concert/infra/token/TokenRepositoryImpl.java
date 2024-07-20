@@ -75,4 +75,12 @@ public class TokenRepositoryImpl implements TokenRepository {
             .createdAt(tokenEntity.getCreatedAt())
             .build();
     }
+
+    @Override
+    public boolean auth(final String token) {
+        final LocalDateTime currentDateTime = dateTimeProvider.currentDateTime();
+
+        return tokenJpaRepository.findValidToken(currentDateTime, currentDateTime.minusMinutes(5), token).isPresent();
+    }
+
 }

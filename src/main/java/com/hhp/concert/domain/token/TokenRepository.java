@@ -10,4 +10,6 @@ public interface TokenRepository {
 
     Token findPendingToken(Long tokenId);
 
+    boolean auth(String token);
+
 }

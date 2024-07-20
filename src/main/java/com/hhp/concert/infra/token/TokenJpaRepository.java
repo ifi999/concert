@@ -47,4 +47,17 @@ public interface TokenJpaRepository extends JpaRepository<TokenEntity, Long> {
         @Param("tokenId") Long tokenId
     );
 
+    @Query("""
+        SELECT t
+          FROM TokenEntity  t
+         WHERE t.token = :token
+           AND t.createdAt <= :now
+           AND t.createdAt >= :fiveMinutesAgo
+    """)
+    Optional<TokenEntity> findValidToken(
+        @Param("now") LocalDateTime now,
+        @Param("fiveMinutesAgo") LocalDateTime fiveMinutesAgo,
+        @Param("token") String token
+    );
+
 }
