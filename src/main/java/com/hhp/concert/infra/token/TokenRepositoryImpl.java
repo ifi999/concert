@@ -64,7 +64,7 @@ public class TokenRepositoryImpl implements TokenRepository {
     }
 
     @Override
-    public Token findPendingToken(final Long tokenId) {
+    public Token getPendingToken(final Long tokenId) {
         final LocalDateTime currentDateTime = dateTimeProvider.currentDateTime();
         final TokenEntity tokenEntity = tokenJpaRepository.findPendingToken(currentDateTime, currentDateTime.minusMinutes(5), tokenId)
             .orElseThrow(() -> new ConcertException(ExceptionCode.AUTH_TOKEN_NOT_FOUND));
@@ -82,6 +82,35 @@ public class TokenRepositoryImpl implements TokenRepository {
         final LocalDateTime currentDateTime = dateTimeProvider.currentDateTime();
 
         return tokenJpaRepository.findValidToken(currentDateTime, currentDateTime.minusMinutes(5), token).isPresent();
+    }
+
+    @Override
+    public Token getPendingToken(final String token) {
+        final LocalDateTime currentDateTime = dateTimeProvider.currentDateTime();
+        final TokenEntity tokenEntity = tokenJpaRepository.findValidToken(currentDateTime, currentDateTime.minusMinutes(5), token)
+            .orElseThrow(() -> new ConcertException(ExceptionCode.AUTH_TOKEN_NOT_FOUND));
+
+        return Token.builder()
+            .tokenId(tokenEntity.getId())
+            .userId(tokenEntity.getUser().getId())
+            .token(tokenEntity.getToken())
+            .createdAt(tokenEntity.getCreatedAt())
+            .build();
+    }
+
+    @Override
+    public void updateToken(final Token token) {
+        final ConcertUserEntity userEntity = concertUserJpaRepository.findById(token.getUserId())
+            .orElseThrow(() -> new ConcertException(ExceptionCode.USER_NOT_FOUND));
+
+        final TokenEntity tokenEntity = TokenEntity.builder()
+            .id(token.getTokenId())
+            .user(userEntity)
+            .token(token.getToken())
+            .lastActiveTime(token.getLastActiveTime())
+            .build();
+
+        tokenJpaRepository.save(tokenEntity);
     }
 
 }

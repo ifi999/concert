@@ -8,8 +8,12 @@ public interface TokenRepository {
 
     List<Long> getOldestPendingToken();
 
-    Token findPendingToken(Long tokenId);
+    Token getPendingToken(Long tokenId);
 
     boolean auth(String token);
+
+    Token getPendingToken(String requestToken);
+
+    void updateToken(Token token);
 
 }

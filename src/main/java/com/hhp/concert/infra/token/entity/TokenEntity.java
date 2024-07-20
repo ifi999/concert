@@ -27,7 +27,7 @@ public class TokenEntity {
     @Column(nullable = false)
     private String token;
 
-    @Column(name = "create_at", nullable = false)
+    @Column(name = "create_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "entry_time")
@@ -36,7 +36,6 @@ public class TokenEntity {
     @Column(name = "last_active_time")
     private LocalDateTime lastActiveTime;
 
-    @Builder
     public TokenEntity(
         final ConcertUserEntity user,
         final String token,
@@ -47,5 +46,17 @@ public class TokenEntity {
         this.createdAt = createdAt;
     }
 
+    @Builder
+    public TokenEntity(
+        final Long id,
+        final ConcertUserEntity user,
+        final String token,
+        final LocalDateTime lastActiveTime
+    ) {
+        this.id = id;
+        this.user = user;
+        this.token = token;
+        this.lastActiveTime = lastActiveTime;
+    }
 
 }

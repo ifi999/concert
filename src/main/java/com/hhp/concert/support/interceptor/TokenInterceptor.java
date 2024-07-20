@@ -30,6 +30,8 @@ public class TokenInterceptor implements HandlerInterceptor {
             return false;
         }
 
+        tokenService.updateTokenActivityTime(token);
+
         return true;
     }
 

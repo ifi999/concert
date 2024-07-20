@@ -3,7 +3,6 @@ package com.hhp.concert.domain.token;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Getter
@@ -48,6 +47,10 @@ public class Token {
             this.lastActiveTime = LocalDateTime.now();
             TokenQueue.add(this);
         };
+    }
+
+    public void updateActiveTime() {
+        this.lastActiveTime = LocalDateTime.now();
     }
 
 }

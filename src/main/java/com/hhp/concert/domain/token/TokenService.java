@@ -1,7 +1,6 @@
 package com.hhp.concert.domain.token;
 
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class TokenService {
     }
 
     public Token renewToken(final Long tokenId) {
-        final Token pendingToken = tokenRepository.findPendingToken(tokenId);
+        final Token pendingToken = tokenRepository.getPendingToken(tokenId);
         final List<Long> oldestPendingTokenList = tokenRepository.getOldestPendingToken();
         final Long oldestPendingTokenId = oldestPendingTokenList.isEmpty() ? pendingToken.getTokenId() : oldestPendingTokenList.get(0);
 
@@ -44,8 +43,15 @@ public class TokenService {
             .build();
     }
 
-    public boolean auth(final String token) {
-        return tokenRepository.auth(token);
+    public boolean auth(final String requestToken) {
+        return tokenRepository.auth(requestToken);
+    }
+
+    public void updateTokenActivityTime(final String requestToken) {
+        final Token token = tokenRepository.getPendingToken(requestToken);
+        token.updateActiveTime();
+
+        tokenRepository.updateToken(token);
     }
 
 }

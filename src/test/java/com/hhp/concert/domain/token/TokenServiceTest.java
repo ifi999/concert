@@ -47,7 +47,7 @@ class TokenServiceTest {
     @Test
     void 토큰_갱신_시_대기열_번호가_0이라면_토큰이_활성화_된다() {
         // given
-        given(tokenRepository.findPendingToken(1L))
+        given(tokenRepository.getPendingToken(1L))
             .willReturn(new Token(
                 1L,
                 123L,
