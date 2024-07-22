@@ -4,12 +4,15 @@ import com.hhp.concert.controller.concert.dto.ReserveSeatRequest;
 import com.hhp.concert.domain.SeatStatus;
 import com.hhp.concert.infra.concert.*;
 import com.hhp.concert.infra.concert.entity.*;
+import com.hhp.concert.infra.token.TokenJpaRepository;
+import com.hhp.concert.infra.token.entity.TokenEntity;
 import com.hhp.concert.infra.user.ConcertUserJpaRepository;
 import com.hhp.concert.infra.user.UserPointJpaRepository;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
 import com.hhp.concert.infra.user.entity.UserPointEntity;
-import com.hhp.concert.util.DateTimeProvider;
+import com.hhp.concert.support.util.DateTimeProvider;
 import io.restassured.path.json.JsonPath;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +20,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,7 +55,22 @@ class ConcertControllerTest {
     private UserPointJpaRepository userPointJpaRepository;
 
     @Autowired
+    private TokenJpaRepository tokenJpaRepository;
+
+    @Autowired
     private DateTimeProvider dateTimeProvider;
+
+    private String authToken;
+
+    @BeforeEach
+    void setUp() {
+        final ConcertUserEntity 사용자 = new ConcertUserEntity("사용자", "222@foo.bar");
+        concertUserJpaRepository.save(사용자);
+
+        authToken = UUID.randomUUID().toString();
+        final TokenEntity 토큰 = new TokenEntity(사용자, authToken, LocalDateTime.now());
+        tokenJpaRepository.save(토큰);
+    }
 
     @Test
     void 콘서트_목록을_조회한다() {
@@ -69,6 +89,7 @@ class ConcertControllerTest {
         final JsonPath 콘서트_목록_조회_응답 =
             given()
                 .log().all()
+                .header("Authorization", authToken)
             .when()
                 .get("/api/concerts")
             .then()
@@ -110,6 +131,7 @@ class ConcertControllerTest {
         final JsonPath 날짜조회_응답 =
             given()
                 .log().all()
+                .header("Authorization", authToken)
             .when()
                 .get("/api/concerts/{concertId}/dates", 콘서트.getId())
             .then()
@@ -153,6 +175,7 @@ class ConcertControllerTest {
         final JsonPath 좌석조회_응답 =
             given()
                 .log().all()
+                .header("Authorization", authToken)
             .when()
                 .get("/api/concerts/{concertId}/schedules/{scheduleId}/seats", 콘서트.getId(), 스케쥴.getId())
             .then()
@@ -200,6 +223,7 @@ class ConcertControllerTest {
         final JsonPath 좌석상태_조회_응답 =
                 given()
                     .log().all()
+                    .header("Authorization", authToken)
                 .when()
                     .get("/api/concerts/{concertId}/schedules/{scheduleId}/seats/{seatId}", 콘서트.getId(), 스케쥴.getId(), 콘서트_좌석.getId())
                 .then()
@@ -255,6 +279,7 @@ class ConcertControllerTest {
         final JsonPath 좌석예약_응답 =
             given()
                 .log().all()
+                .header("Authorization", authToken)
                 .body(좌석예약_요청)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()

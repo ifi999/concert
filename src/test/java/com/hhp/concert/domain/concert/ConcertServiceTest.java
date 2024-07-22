@@ -1,9 +1,10 @@
 package com.hhp.concert.domain.concert;
 
+import com.hhp.concert.domain.SeatStatus;
 import com.hhp.concert.domain.user.ConcertUser;
 import com.hhp.concert.domain.user.ConcertUserRepository;
 import com.hhp.concert.infra.concert.ConcertJpaRepository;
-import com.hhp.concert.util.DateTimeProvider;
+import com.hhp.concert.support.util.DateTimeProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -168,6 +169,7 @@ class ConcertServiceTest {
                 "A구역",
                 "일반석",
                 "A1",
+                SeatStatus.AVAILABLE,
                 30_000L,
                 true)
             )
@@ -211,6 +213,7 @@ class ConcertServiceTest {
             "A구역",
             "일반석",
             "A1",
+            SeatStatus.AVAILABLE,
             30_000L,
             true
         );
@@ -257,6 +260,7 @@ class ConcertServiceTest {
             "A구역",
             "일반석",
             "A1",
+            SeatStatus.RESERVED,
             30_000L,
             true
         );
@@ -264,6 +268,7 @@ class ConcertServiceTest {
         final ConcertReservation 예약 = new ConcertReservation(
             1L,
             사용자.getId(),
+            콘서트.getId(),
             스케쥴.getConcertScheduleId(),
             좌석.getSeatId(),
             "A1",

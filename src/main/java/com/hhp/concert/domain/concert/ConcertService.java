@@ -2,7 +2,7 @@ package com.hhp.concert.domain.concert;
 
 import com.hhp.concert.domain.user.ConcertUser;
 import com.hhp.concert.domain.user.ConcertUserRepository;
-import com.hhp.concert.util.DateTimeProvider;
+import com.hhp.concert.support.util.DateTimeProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,6 +71,8 @@ public class ConcertService {
         final ConcertUser user = concertUserRepository.getUserById(reservation.getUserId());
         final ConcertSchedule schedule = concertScheduleRepository.getConcertScheduleById(reservation.getScheduleId());
         final ConcertSeat seat = concertSeatRepository.getConcertSeatById(reservation.getSeatId());
+        seat.reserve();
+        concertSeatRepository.updateSeat(seat);
 
         return concertReservationRepository.reserve(user, schedule, seat);
     }

@@ -43,7 +43,6 @@ public class ConcertReservationEntity {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Builder
     public ConcertReservationEntity(
         final ConcertUserEntity user,
         final ConcertScheduleEntity schedule,
@@ -59,12 +58,22 @@ public class ConcertReservationEntity {
         this.createdAt = LocalDateTime.now();
     }
 
-    public void completeReservation() {
-        if (this.reservationStatus != ConcertReservationStatus.PENDING) {
-            throw new IllegalStateException("Reservation status must be WAITING to complete it");
-        }
-
-        this.reservationStatus = ConcertReservationStatus.CONFIRMED;
+    @Builder
+    public ConcertReservationEntity(
+        final Long id,
+        final ConcertUserEntity user,
+        final ConcertScheduleEntity schedule,
+        final ConcertSeatEntity concertSeat,
+        final Long reservationPrice,
+        final ConcertReservationStatus reservationStatus
+    ) {
+        this.id = id;
+        this.user = user;
+        this.schedule = schedule;
+        this.concertSeat = concertSeat;
+        this.reservationPrice = reservationPrice;
+        this.reservationStatus = reservationStatus;
+        this.createdAt = LocalDateTime.now();
     }
 
 }

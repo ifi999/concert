@@ -18,7 +18,6 @@ public interface TokenJpaRepository extends JpaRepository<TokenEntity, Long> {
          WHERE t.user = :user
            AND t.createdAt <= :now
            AND t.createdAt >= :fiveMinutesAgo
-           AND t.tokenStatus = 'PENDING'
     """)
     Optional<TokenEntity> findByUser(
         @Param("now") LocalDateTime now,
@@ -29,8 +28,7 @@ public interface TokenJpaRepository extends JpaRepository<TokenEntity, Long> {
     @Query("""
         SELECT t.id
           FROM TokenEntity t
-         WHERE t.tokenStatus = 'PENDING'
-           AND t.createdAt <= :now
+         WHERE t.createdAt <= :now
            AND t.createdAt >= :fiveMinutesAgo
          ORDER By t.createdAt
     """)
@@ -42,12 +40,24 @@ public interface TokenJpaRepository extends JpaRepository<TokenEntity, Long> {
          WHERE t.id = :tokenId
            AND t.createdAt <= :now
            AND t.createdAt >= :fiveMinutesAgo
-           AND t.tokenStatus = 'PENDING'
     """)
     Optional<TokenEntity> findPendingToken(
         @Param("now") LocalDateTime now,
         @Param("fiveMinutesAgo") LocalDateTime fiveMinutesAgo,
         @Param("tokenId") Long tokenId
+    );
+
+    @Query("""
+        SELECT t
+          FROM TokenEntity  t
+         WHERE t.token = :token
+           AND t.createdAt <= :now
+           AND t.createdAt >= :fiveMinutesAgo
+    """)
+    Optional<TokenEntity> findValidToken(
+        @Param("now") LocalDateTime now,
+        @Param("fiveMinutesAgo") LocalDateTime fiveMinutesAgo,
+        @Param("token") String token
     );
 
 }

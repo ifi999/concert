@@ -29,6 +29,7 @@ public class ConcertReservation {
     public ConcertReservation(
         final Long reservationId,
         final Long userId,
+        final Long concertId,
         final Long scheduleId,
         final Long seatId,
         final String seatName,
@@ -38,12 +39,21 @@ public class ConcertReservation {
     ) {
         this.reservationId = reservationId;
         this.userId = userId;
+        this.concertId = concertId;
         this.scheduleId = scheduleId;
         this.seatId = seatId;
         this.seatName = seatName;
         this.price = price;
         this.reservationStatus = reservationStatus;
         this.createdAt = createdAt;
+    }
+
+    public void completeReservation() {
+        if (this.reservationStatus != ConcertReservationStatus.PENDING) {
+            throw new IllegalStateException("Reservation status must be WAITING to complete it");
+        }
+
+        this.reservationStatus = ConcertReservationStatus.CONFIRMED;
     }
 
 }

@@ -2,13 +2,13 @@ package com.hhp.concert.infra.token;
 
 import com.hhp.concert.domain.token.Token;
 import com.hhp.concert.domain.token.TokenRepository;
-import com.hhp.concert.domain.token.TokenStatus;
 import com.hhp.concert.infra.token.entity.TokenEntity;
 import com.hhp.concert.infra.user.ConcertUserJpaRepository;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
-import com.hhp.concert.util.DateTimeProvider;
-import com.hhp.concert.util.TokenProvider;
-import jakarta.persistence.EntityNotFoundException;
+import com.hhp.concert.support.exception.ConcertException;
+import com.hhp.concert.support.exception.ExceptionCode;
+import com.hhp.concert.support.util.DateTimeProvider;
+import com.hhp.concert.support.util.TokenProvider;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -37,51 +37,80 @@ public class TokenRepositoryImpl implements TokenRepository {
     @Override
     public Token getTokenByUserId(final Long userId) {
         final ConcertUserEntity userEntity = concertUserJpaRepository.findById(userId)
-            .orElseThrow(() -> new EntityNotFoundException("User not found. ID: " + userId));
+            .orElseThrow(() -> new ConcertException(ExceptionCode.USER_NOT_FOUND));
 
         final LocalDateTime currentDateTime = dateTimeProvider.currentDateTime();
         final TokenEntity tokenEntity = tokenJpaRepository.findByUser(currentDateTime, currentDateTime.minusMinutes(5), userEntity)
             .orElseGet(() -> tokenJpaRepository.save(new TokenEntity(
                 userEntity,
                 tokenProvider.generateToken(),
-                TokenStatus.PENDING,
                 currentDateTime)
             )
         );
 
-        final List<Long> oldestPendingTokenList = tokenJpaRepository.findOldestPendingToken(currentDateTime, currentDateTime.minusMinutes(5));
-        final Long oldestPendingTokenId = oldestPendingTokenList.isEmpty() ? tokenEntity.getId() : oldestPendingTokenList.get(0);
-
         return Token.builder()
             .tokenId(tokenEntity.getId())
             .userId(tokenEntity.getUser().getId())
             .token(tokenEntity.getToken())
-            .tokenStatus(tokenEntity.getTokenStatus())
             .createdAt(tokenEntity.getCreatedAt())
-            .queueNumber(oldestPendingTokenId - tokenEntity.getId())
             .build();
     }
 
     @Override
-    public Token renewToken(final Long tokenId) {
+    public List<Long> getOldestPendingToken() {
         final LocalDateTime currentDateTime = dateTimeProvider.currentDateTime();
 
+        return tokenJpaRepository.findOldestPendingToken(currentDateTime, currentDateTime.minusMinutes(5));
+    }
+
+    @Override
+    public Token getPendingToken(final Long tokenId) {
+        final LocalDateTime currentDateTime = dateTimeProvider.currentDateTime();
         final TokenEntity tokenEntity = tokenJpaRepository.findPendingToken(currentDateTime, currentDateTime.minusMinutes(5), tokenId)
-            .orElseThrow(() -> new EntityNotFoundException("Token not found. ID: " + tokenId));
-
-        final List<Long> oldestPendingTokenList = tokenJpaRepository.findOldestPendingToken(currentDateTime, currentDateTime.minusMinutes(5));
-        final Long oldestPendingTokenId = oldestPendingTokenList.isEmpty() ? tokenEntity.getId() : oldestPendingTokenList.get(0);
-
-        tokenEntity.validEntry(oldestPendingTokenId);
+            .orElseThrow(() -> new ConcertException(ExceptionCode.AUTH_TOKEN_NOT_FOUND));
 
         return Token.builder()
             .tokenId(tokenEntity.getId())
             .userId(tokenEntity.getUser().getId())
             .token(tokenEntity.getToken())
-            .tokenStatus(tokenEntity.getTokenStatus())
             .createdAt(tokenEntity.getCreatedAt())
-            .queueNumber(oldestPendingTokenId - tokenEntity.getId())
             .build();
+    }
+
+    @Override
+    public boolean auth(final String token) {
+        final LocalDateTime currentDateTime = dateTimeProvider.currentDateTime();
+
+        return tokenJpaRepository.findValidToken(currentDateTime, currentDateTime.minusMinutes(5), token).isPresent();
+    }
+
+    @Override
+    public Token getPendingToken(final String token) {
+        final LocalDateTime currentDateTime = dateTimeProvider.currentDateTime();
+        final TokenEntity tokenEntity = tokenJpaRepository.findValidToken(currentDateTime, currentDateTime.minusMinutes(5), token)
+            .orElseThrow(() -> new ConcertException(ExceptionCode.AUTH_TOKEN_NOT_FOUND));
+
+        return Token.builder()
+            .tokenId(tokenEntity.getId())
+            .userId(tokenEntity.getUser().getId())
+            .token(tokenEntity.getToken())
+            .createdAt(tokenEntity.getCreatedAt())
+            .build();
+    }
+
+    @Override
+    public void updateToken(final Token token) {
+        final ConcertUserEntity userEntity = concertUserJpaRepository.findById(token.getUserId())
+            .orElseThrow(() -> new ConcertException(ExceptionCode.USER_NOT_FOUND));
+
+        final TokenEntity tokenEntity = TokenEntity.builder()
+            .id(token.getTokenId())
+            .user(userEntity)
+            .token(token.getToken())
+            .lastActiveTime(token.getLastActiveTime())
+            .build();
+
+        tokenJpaRepository.save(tokenEntity);
     }
 
 }

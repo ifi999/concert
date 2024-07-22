@@ -5,8 +5,8 @@ import com.hhp.concert.domain.user.ConcertUserService;
 import com.hhp.concert.infra.token.TokenJpaRepository;
 import com.hhp.concert.infra.token.entity.TokenEntity;
 import com.hhp.concert.infra.user.entity.ConcertUserEntity;
-import com.hhp.concert.util.DateTimeProvider;
-import com.hhp.concert.util.TokenProvider;
+import com.hhp.concert.support.util.DateTimeProvider;
+import com.hhp.concert.support.util.TokenProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,7 +54,7 @@ public class TokenServiceIntegrationTest {
 
         final LocalDateTime 현재시간 = dateTimeProvider.currentDateTime();
         final String UUID_토큰 = tokenProvider.generateToken();
-        final TokenEntity 기존_토큰 = tokenJpaRepository.save(new TokenEntity(사용자_엔티티, UUID_토큰, TokenStatus.PENDING, 현재시간.minusMinutes(10)));
+        final TokenEntity 기존_토큰 = tokenJpaRepository.save(new TokenEntity(사용자_엔티티, UUID_토큰, 현재시간.minusMinutes(10)));
         System.out.println("기존_토큰.getToken() = " + 기존_토큰.getToken());
 
         // when

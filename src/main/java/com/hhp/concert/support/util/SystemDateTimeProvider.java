@@ -1,4 +1,4 @@
-package com.hhp.concert.util;
+package com.hhp.concert.support.util;
 
 import org.springframework.stereotype.Component;
 

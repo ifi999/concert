@@ -40,4 +40,16 @@ public class UserPoint {
         this.point = point;
     }
 
+    public void decrementPoint(final Long reservedPrice, final Long amount) {
+        if (!reservedPrice.equals(amount)) {
+            throw new IllegalArgumentException("Payment amount does not match the requested deduction amount.");
+        }
+
+        if (this.point < amount) {
+            throw new IllegalArgumentException("Not enough points to deduct.");
+        }
+
+        this.point -= amount;
+    }
+
 }

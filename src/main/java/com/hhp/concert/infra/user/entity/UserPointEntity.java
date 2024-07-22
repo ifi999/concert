@@ -23,6 +23,12 @@ public class UserPointEntity {
     @Column(nullable = false)
     private Long point;
 
+    public UserPointEntity(final Long id, final ConcertUserEntity user, final Long point) {
+        this.id = id;
+        this.user = user;
+        this.point = point;
+    }
+
     public UserPointEntity(final ConcertUserEntity user, final Long point) {
         this.user = user;
         this.point = point;
@@ -30,18 +36,6 @@ public class UserPointEntity {
 
     public void incrementPoint(final Long point) {
         this.point += point;
-    }
-
-    public void decrementPoint(final Long reservedPrice, final Long amount) {
-        if (!reservedPrice.equals(amount)) {
-            throw new IllegalArgumentException("Payment amount does not match the requested deduction amount.");
-        }
-
-        if (this.point < amount) {
-            throw new IllegalArgumentException("Not enough points to deduct.");
-        }
-
-        this.point -= amount;
     }
 
 }

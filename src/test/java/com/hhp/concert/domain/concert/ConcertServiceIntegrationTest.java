@@ -1,8 +1,6 @@
-package com.hhp.concert.domain.payment;
+package com.hhp.concert.domain.concert;
 
 import com.hhp.concert.domain.SeatStatus;
-import com.hhp.concert.domain.concert.ConcertReservation;
-import com.hhp.concert.domain.concert.ConcertService;
 import com.hhp.concert.domain.user.ConcertUser;
 import com.hhp.concert.domain.user.ConcertUserService;
 import com.hhp.concert.domain.user.UserPoint;
@@ -16,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,19 +23,16 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class PaymentServiceIntegrationTest {
+public class ConcertServiceIntegrationTest {
 
     @Autowired
-    private PaymentService paymentService;
+    ConcertService concertService;
 
     @Autowired
     private ConcertUserService concertUserService;
 
     @Autowired
     private UserPointService userPointService;
-
-    @Autowired
-    private ConcertService concertService;
 
     @Autowired
     private ConcertJpaRepository concertJpaRepository;
@@ -56,12 +52,14 @@ public class PaymentServiceIntegrationTest {
     @Autowired
     private ConcertSeatJpaRepository concertSeatJpaRepository;
 
+    @Autowired
+    private ConcertReservationJpaRepository concertReservationJpaRepository;
 
     @Autowired
     private DateTimeProvider dateTimeProvider;
 
     @Test
-    void 동시에_결제를_해도_1건만_결제된다() throws Exception {
+    void 동시에_예약을_해도_1건만_예약된다() throws Exception {
         // given
         final LocalDate 현재시간 = dateTimeProvider.currentDate();
 
@@ -88,17 +86,13 @@ public class PaymentServiceIntegrationTest {
 
         final ConcertSeatEntity 콘서트_좌석 = concertSeatJpaRepository.save(new ConcertSeatEntity(콘서트, 스케쥴, 좌석, SeatStatus.AVAILABLE));
 
-        final ConcertReservation 예약 = concertService.reserve(new ConcertReservation(사용자.getId(), 콘서트.getId(), 스케쥴.getId(), 콘서트_좌석.getId()));
-
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         CountDownLatch latch = new CountDownLatch(10);
-
-//        paymentService.pay(new Payment(예약.getReservationId(), 사용자.getId(), 30_000L));
 
         for (int i = 0; i < 10; i++) {
             executorService.submit(() -> {
                 try {
-                    return paymentService.pay(new Payment(예약.getReservationId(), 사용자.getId(), 30_000L));
+                    return concertService.reserve(new ConcertReservation(사용자.getId(), 콘서트.getId(), 스케쥴.getId(), 콘서트_좌석.getId()));
                 } finally {
                     latch.countDown();
                 }
@@ -108,10 +102,10 @@ public class PaymentServiceIntegrationTest {
         latch.await(30, TimeUnit.SECONDS);
 
         // when
-        final UserPoint 결제_후_잔액 = userPointService.getBalance(사용자.getId());
+        final List<ConcertReservationEntity> 예약_목록 = concertReservationJpaRepository.findAll();
 
         // then
-        assertThat(결제_후_잔액.getPoint()).isEqualTo(70_000L);
+        assertThat(예약_목록.size()).isEqualTo(1);
     }
 
 }
