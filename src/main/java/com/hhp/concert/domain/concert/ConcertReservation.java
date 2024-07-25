@@ -17,6 +17,7 @@ public class ConcertReservation {
     private Long price;
     private ConcertReservationStatus reservationStatus;
     private LocalDateTime createdAt;
+    private Long version;
 
     public ConcertReservation(final Long userId, final Long concertId, final Long scheduleId, final Long seatId) {
         this.userId = userId;
@@ -35,7 +36,8 @@ public class ConcertReservation {
         final String seatName,
         final Long price,
         final ConcertReservationStatus reservationStatus,
-        final LocalDateTime createdAt
+        final LocalDateTime createdAt,
+        final Long version
     ) {
         this.reservationId = reservationId;
         this.userId = userId;
@@ -46,6 +48,7 @@ public class ConcertReservation {
         this.price = price;
         this.reservationStatus = reservationStatus;
         this.createdAt = createdAt;
+        this.version = version;
     }
 
     public void completeReservation() {

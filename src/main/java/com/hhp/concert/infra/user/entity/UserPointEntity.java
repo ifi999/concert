@@ -23,10 +23,14 @@ public class UserPointEntity {
     @Column(nullable = false)
     private Long point;
 
-    public UserPointEntity(final Long id, final ConcertUserEntity user, final Long point) {
+    @Version
+    private Long version;
+
+    public UserPointEntity(final Long id, final ConcertUserEntity user, final Long point, final Long version) {
         this.id = id;
         this.user = user;
         this.point = point;
+        this.version = version;
     }
 
     public UserPointEntity(final ConcertUserEntity user, final Long point) {

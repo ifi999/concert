@@ -31,7 +31,7 @@ class ConcertUserServiceTest {
         given(concertUserRepository.enroll(사용자))
             .willReturn(new ConcertUser(1L, "사용자1", "222@foo.bar"));
         given(userPointRepository.charge(any(), any()))
-            .willReturn(new UserPoint(1L, 1L, 0L));
+            .willReturn(new UserPoint(1L, 1L, 0L, 0L));
 
         // when
         final ConcertUser 등록된_사용자 = concertUserService.enroll(사용자);

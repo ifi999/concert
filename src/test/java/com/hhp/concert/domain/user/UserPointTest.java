@@ -53,11 +53,11 @@ class UserPointTest {
         // when
 
         // then
-        assertThatThrownBy(() -> new UserPoint(음수_포인트_id, 사용자_id, 포인트))
+        assertThatThrownBy(() -> new UserPoint(음수_포인트_id, 사용자_id, 포인트, 0L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Point's id must be positive.");
 
-        assertThatThrownBy(() -> new UserPoint(null, 사용자_id, 포인트))
+        assertThatThrownBy(() -> new UserPoint(null, 사용자_id, 포인트, 0L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Point's id must not be null.");
     }

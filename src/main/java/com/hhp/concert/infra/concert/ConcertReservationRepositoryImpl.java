@@ -66,12 +66,13 @@ public class ConcertReservationRepositoryImpl implements ConcertReservationRepos
             .price(savedConcertReservation.getReservationPrice())
             .reservationStatus(savedConcertReservation.getReservationStatus())
             .createdAt(savedConcertReservation.getCreatedAt())
+            .version(savedConcertReservation.getVersion())
             .build();
     }
 
     @Override
     public ConcertReservation getReservationById(final Long reservationId) {
-        final ConcertReservationEntity concertReservationEntity = concertReservationJpaRepository.findByIdWithLock(reservationId)
+        final ConcertReservationEntity concertReservationEntity = concertReservationJpaRepository.findById(reservationId)
             .orElseThrow(() -> new ConcertException(ExceptionCode.RESERVATION_NOT_FOUND));
 
         final ConcertEntity concertEntity = concertJpaRepository.findById(concertReservationEntity.getSchedule().getConcert().getId())
@@ -87,6 +88,7 @@ public class ConcertReservationRepositoryImpl implements ConcertReservationRepos
             .price(concertReservationEntity.getReservationPrice())
             .reservationStatus(concertReservationEntity.getReservationStatus())
             .createdAt(concertReservationEntity.getCreatedAt())
+            .version(concertReservationEntity.getVersion())
             .build();
     }
 
@@ -108,6 +110,7 @@ public class ConcertReservationRepositoryImpl implements ConcertReservationRepos
             .concertSeat(concertSeatEntity)
             .reservationPrice(reservation.getPrice())
             .reservationStatus(reservation.getReservationStatus())
+            .version(reservation.getVersion())
             .build();
 
         final ConcertReservationEntity savedReservationEntity = concertReservationJpaRepository.save(reservationEntity);
@@ -122,6 +125,7 @@ public class ConcertReservationRepositoryImpl implements ConcertReservationRepos
             .price(savedReservationEntity.getReservationPrice())
             .reservationStatus(savedReservationEntity.getReservationStatus())
             .createdAt(savedReservationEntity.getCreatedAt())
+            .version(savedReservationEntity.getVersion())
             .build();
     }
 

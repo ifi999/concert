@@ -43,6 +43,9 @@ public class ConcertReservationEntity {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @Version
+    private Long version;
+
     public ConcertReservationEntity(
         final ConcertUserEntity user,
         final ConcertScheduleEntity schedule,
@@ -65,7 +68,8 @@ public class ConcertReservationEntity {
         final ConcertScheduleEntity schedule,
         final ConcertSeatEntity concertSeat,
         final Long reservationPrice,
-        final ConcertReservationStatus reservationStatus
+        final ConcertReservationStatus reservationStatus,
+        final Long version
     ) {
         this.id = id;
         this.user = user;
@@ -74,6 +78,7 @@ public class ConcertReservationEntity {
         this.reservationPrice = reservationPrice;
         this.reservationStatus = reservationStatus;
         this.createdAt = LocalDateTime.now();
+        this.version = version;
     }
 
 }

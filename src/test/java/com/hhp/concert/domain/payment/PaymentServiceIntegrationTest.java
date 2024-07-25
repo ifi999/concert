@@ -11,6 +11,8 @@ import com.hhp.concert.infra.concert.*;
 import com.hhp.concert.infra.concert.entity.*;
 import com.hhp.concert.support.util.DateTimeProvider;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -25,6 +27,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class PaymentServiceIntegrationTest {
+
+    private final Logger logger = LoggerFactory.getLogger(PaymentServiceIntegrationTest.class);
 
     @Autowired
     private PaymentService paymentService;
@@ -90,12 +94,40 @@ public class PaymentServiceIntegrationTest {
 
         final ConcertReservation 예약 = concertService.reserve(new ConcertReservation(사용자.getId(), 콘서트.getId(), 스케쥴.getId(), 콘서트_좌석.getId()));
 
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        CountDownLatch latch = new CountDownLatch(10);
+        int threadPoolCount = 10;
+        ExecutorService executorService = Executors.newFixedThreadPool(threadPoolCount);
+        int loopCount = 10_000;
+        CountDownLatch latch = new CountDownLatch(loopCount);
 
-//        paymentService.pay(new Payment(예약.getReservationId(), 사용자.getId(), 30_000L));
+        long startTime = System.currentTimeMillis();
 
-        for (int i = 0; i < 10; i++) {
+        /**
+         * 낙관적 락
+         * 1. thread 50 / count 10_000
+         * 1) 2293
+         * 2) 1937
+         * 3) 1901
+         * 4) 1757
+         * 5) 1636
+         *
+         * 2. thread 100 / count 10_000
+         * 1) 2142
+         * 2) 1973
+         * 3) 1639
+         * 4) 1868
+         * 5) 1752
+         *
+         * 3. thread 100 / count 100_000
+         * 1) 1699
+         *
+         * 4.thread 10 / count 10_000
+         * 1) 1435
+         * 2) 1432
+         * 3) 1201
+         * 4) 1360
+         * 5) 1528
+         */
+        for (int i = 0; i < loopCount; i++) {
             executorService.submit(() -> {
                 try {
                     return paymentService.pay(new Payment(예약.getReservationId(), 사용자.getId(), 30_000L));
@@ -105,7 +137,10 @@ public class PaymentServiceIntegrationTest {
             });
         }
 
-        latch.await(30, TimeUnit.SECONDS);
+//        latch.await(10, TimeUnit.SECONDS);
+
+        long endTime = System.currentTimeMillis();
+        logger.info("Execution time for Pessimistic Lock: {}", (endTime - startTime));
 
         // when
         final UserPoint 결제_후_잔액 = userPointService.getBalance(사용자.getId());

@@ -274,7 +274,8 @@ class ConcertServiceTest {
             "A1",
             30_000L,
             ConcertReservationStatus.PENDING,
-            LocalDate.of(2024, 7, 13).atTime(13, 33, 0)
+            LocalDate.of(2024, 7, 13).atTime(13, 33, 0),
+            0L
         );
         given(concertReservationRepository.reserve(사용자, 스케쥴, 좌석))
             .willReturn(예약);

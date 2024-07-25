@@ -10,7 +10,7 @@ public enum ExceptionCode {
     SEAT_NOT_FOUND("좌석을 찾을 수 없습니다."),
     RESERVATION_NOT_FOUND("예약을 찾을 수 없습니다."),
     AUTH_TOKEN_NOT_FOUND("인증 토큰을 찾을 수 없습니다."),
-    ;
+    PAY_FAILED("결제에 실패했습니다.");
 
     private String message;
 

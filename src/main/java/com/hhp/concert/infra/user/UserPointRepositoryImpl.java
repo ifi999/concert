@@ -31,7 +31,8 @@ public class UserPointRepositoryImpl implements UserPointRepository {
         return new UserPoint(
             userPointEntity.getId(),
             userPointEntity.getUser().getId(),
-            userPointEntity.getPoint()
+            userPointEntity.getPoint(),
+            userPointEntity.getVersion()
         );
     }
 
@@ -43,19 +44,21 @@ public class UserPointRepositoryImpl implements UserPointRepository {
         return new UserPoint(
             userPointEntity.getId(),
             userPointEntity.getUser().getId(),
-            userPointEntity.getPoint()
+            userPointEntity.getPoint(),
+            userPointEntity.getVersion()
         );
     }
 
     @Override
     public UserPoint getUserPointByUserId(final Long userId) {
-        final UserPointEntity userPointEntity = userPointJpaRepository.findByUserIdWithLock(userId)
+        final UserPointEntity userPointEntity = userPointJpaRepository.findByUserId(userId)
             .orElseThrow(() -> new ConcertException(ExceptionCode.USER_POINT_NOT_FOUND));
 
         return new UserPoint(
             userPointEntity.getId(),
             userPointEntity.getUser().getId(),
-            userPointEntity.getPoint()
+            userPointEntity.getPoint(),
+            userPointEntity.getVersion()
         );
     }
 
@@ -63,14 +66,15 @@ public class UserPointRepositoryImpl implements UserPointRepository {
     public UserPoint updateUserPoint(final UserPoint userPoint) {
         final ConcertUserEntity userEntity = concertUserJpaRepository.findById(userPoint.getUserId())
             .orElseThrow(() -> new ConcertException(ExceptionCode.USER_NOT_FOUND));
-        final UserPointEntity userPointEntity = new UserPointEntity(userPoint.getPointId(), userEntity, userPoint.getPoint());
+        final UserPointEntity userPointEntity = new UserPointEntity(userPoint.getPointId(), userEntity, userPoint.getPoint(), userPoint.getVersion());
 
         final UserPointEntity savedUserPointEntity = userPointJpaRepository.save(userPointEntity);
 
         return new UserPoint(
             savedUserPointEntity.getId(),
             savedUserPointEntity.getUser().getId(),
-            savedUserPointEntity.getPoint()
+            savedUserPointEntity.getPoint(),
+            savedUserPointEntity.getVersion()
         );
     }
 

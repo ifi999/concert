@@ -6,6 +6,9 @@ import com.hhp.concert.domain.user.ConcertUser;
 import com.hhp.concert.domain.user.ConcertUserRepository;
 import com.hhp.concert.domain.user.UserPoint;
 import com.hhp.concert.domain.user.UserPointRepository;
+import com.hhp.concert.support.exception.ConcertException;
+import com.hhp.concert.support.exception.ExceptionCode;
+import jakarta.persistence.OptimisticLockException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,10 +43,16 @@ public class PaymentService {
         userPoint.decrementPoint(reservation.getPrice(), payment.getPaymentAmount());
         reservation.completeReservation();
 
-        userPointRepository.updateUserPoint(userPoint);
-        final ConcertReservation updatedReservation = concertReservationRepository.updateConcertReservation(reservation);
+        try {
+            userPointRepository.updateUserPoint(userPoint);
+            final ConcertReservation updatedReservation = concertReservationRepository.updateConcertReservation(reservation);
 
-        return paymentRepository.pay(user, updatedReservation, payment.getPaymentAmount());
+            return paymentRepository.pay(user, updatedReservation, payment.getPaymentAmount());
+        } catch (OptimisticLockException e) {
+            throw new ConcertException(ExceptionCode.PAY_FAILED);
+        } catch (Exception e) {
+            throw new ConcertException(ExceptionCode.PAY_FAILED);
+        }
     }
 
     public List<Payment> getUserPayments(final long userId) {
