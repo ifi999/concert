@@ -91,11 +91,35 @@ public class PaymentServiceIntegrationTest {
         final ConcertReservation 예약 = concertService.reserve(new ConcertReservation(사용자.getId(), 콘서트.getId(), 스케쥴.getId(), 콘서트_좌석.getId()));
 
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        CountDownLatch latch = new CountDownLatch(10);
+        CountDownLatch latch = new CountDownLatch(10_000);
 
-//        paymentService.pay(new Payment(예약.getReservationId(), 사용자.getId(), 30_000L));
-
-        for (int i = 0; i < 10; i++) {
+        /**
+         * 비관적 락
+         * 1. thread 50 / count 10_000
+         * 1) 8629
+         * 2) 8219
+         * 3) 8315
+         * 4) 8582
+         * 5) 8423
+         *
+         * 2. thread 100 / count 10_000
+         * 1) 7823
+         * 2) 8726
+         * 3) 8689
+         * 4) 8275
+         * 5) 7752
+         *
+         * 3. thread 100 / count 100_000
+         * 1) 실패. 리소스 부족인듯. 도중에 테스트가 멈추고 실패함 (Unexpected type tag 0 found.)
+         *
+         * 4.thread 10 / count 10_000
+         * 1) 8325
+         * 2) 8081
+         * 3) 8103
+         * 4) 9426
+         * 5) 7847
+         */
+        for (int i = 0; i < 10_000; i++) {
             executorService.submit(() -> {
                 try {
                     return paymentService.pay(new Payment(예약.getReservationId(), 사용자.getId(), 30_000L));
