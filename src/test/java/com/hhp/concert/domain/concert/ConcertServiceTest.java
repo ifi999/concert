@@ -171,7 +171,8 @@ class ConcertServiceTest {
                 "A1",
                 SeatStatus.AVAILABLE,
                 30_000L,
-                true)
+                true,
+                0L)
             )
         );
 
@@ -215,7 +216,8 @@ class ConcertServiceTest {
             "A1",
             SeatStatus.AVAILABLE,
             30_000L,
-            true
+            true,
+            0L
         );
 
         given(concertSeatRepository.getConcertSeatById(콘서트_좌석.getConcertSeatId()))
@@ -262,7 +264,8 @@ class ConcertServiceTest {
             "A1",
             SeatStatus.RESERVED,
             30_000L,
-            true
+            true,
+            0L
         );
 
         final ConcertReservation 예약 = new ConcertReservation(

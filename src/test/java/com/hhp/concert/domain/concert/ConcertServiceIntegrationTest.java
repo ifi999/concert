@@ -86,10 +86,12 @@ public class ConcertServiceIntegrationTest {
 
         final ConcertSeatEntity 콘서트_좌석 = concertSeatJpaRepository.save(new ConcertSeatEntity(콘서트, 스케쥴, 좌석, SeatStatus.AVAILABLE));
 
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        CountDownLatch latch = new CountDownLatch(10);
+        int threadPoolCount = 50;
+        ExecutorService executorService = Executors.newFixedThreadPool(threadPoolCount);
+        int loopCount = 1_000;
+        CountDownLatch latch = new CountDownLatch(loopCount);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < loopCount; i++) {
             executorService.submit(() -> {
                 try {
                     return concertService.reserve(new ConcertReservation(사용자.getId(), 콘서트.getId(), 스케쥴.getId(), 콘서트_좌석.getId()));

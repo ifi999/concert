@@ -34,6 +34,9 @@ public class ConcertSeatEntity {
     @Column(name = "seat_status", nullable = false)
     private SeatStatus seatStatus;
 
+    @Version
+    private Long version;
+
     public ConcertSeatEntity(final ConcertEntity concert, final ConcertScheduleEntity concertSchedule, final SeatEntity seat, final SeatStatus seatStatus) {
         this.concert = concert;
         this.concertSchedule = concertSchedule;
@@ -41,12 +44,20 @@ public class ConcertSeatEntity {
         this.seatStatus = seatStatus;
     }
     @Builder
-    public ConcertSeatEntity(final Long id, final ConcertEntity concert, final ConcertScheduleEntity concertSchedule, final SeatEntity seat, final SeatStatus seatStatus) {
+    public ConcertSeatEntity(
+            final Long id,
+            final ConcertEntity concert,
+            final ConcertScheduleEntity concertSchedule,
+            final SeatEntity seat,
+            final SeatStatus seatStatus,
+            final Long version
+    ) {
         this.id = id;
         this.concert = concert;
         this.concertSchedule = concertSchedule;
         this.seat = seat;
         this.seatStatus = seatStatus;
+        this.version = version;
     }
 
 }
