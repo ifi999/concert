@@ -22,6 +22,15 @@ public interface UserPointJpaRepository extends JpaRepository<UserPointEntity, L
     """)
     Optional<UserPointEntity> findByUserIdWithLock(@Param("userId") Long userId);
 
+    @Lock(LockModeType.OPTIMISTIC)
+    @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value = "2000")})
     Optional<UserPointEntity> findByUserId(Long userId);
+
+    @Query("""
+        SELECT p
+          FROM UserPointEntity p
+         WHERE p.user.id = :userId
+    """)
+    Optional<UserPointEntity> findByUserIdPure(Long userId);
 
 }

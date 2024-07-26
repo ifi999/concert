@@ -48,7 +48,7 @@ class PaymentServiceTest {
             .willReturn(사용자);
 
         given(userPointRepository.getUserPointByUserId(22L))
-            .willReturn(new UserPoint(1L, 22L, 50_000L));
+            .willReturn(new UserPoint(1L, 22L, 50_000L, 0L));
 
         final ConcertReservation 예약 = new ConcertReservation(
             1L,

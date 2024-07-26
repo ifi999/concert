@@ -17,7 +17,7 @@ public class ConcertUserService {
 
     public ConcertUser enroll(final ConcertUser user) {
         final ConcertUser enrolledUser = concertUserRepository.enroll(user);
-        userPointRepository.charge(enrolledUser, 0L);
+        userPointRepository.getUserPoint(enrolledUser);
 
         return enrolledUser;
     }

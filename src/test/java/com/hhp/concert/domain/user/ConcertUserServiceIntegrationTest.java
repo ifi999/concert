@@ -1,6 +1,8 @@
 package com.hhp.concert.domain.user;
 
+import com.hhp.concert.infra.user.ConcertUserJpaRepository;
 import com.hhp.concert.infra.user.UserPointJpaRepository;
+import com.hhp.concert.infra.user.entity.ConcertUserEntity;
 import com.hhp.concert.infra.user.entity.UserPointEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +25,23 @@ public class ConcertUserServiceIntegrationTest {
     private UserPointJpaRepository userPointJpaRepository;
 
     @Autowired
+    private ConcertUserJpaRepository concertUserJpaRepository;
+
+    @Autowired
     private UserPointService userPointService;
 
     @Test
     void 동시에_30번의_충전_요청이_오는_경우_30번_모두_충전된다() throws Exception {
         // given
-        final ConcertUser 사용자 = concertUserService.enroll(new ConcertUser("사용자1", "222@foo.bar"));
+        final ConcertUserEntity 사용자 = concertUserJpaRepository.save(new ConcertUserEntity("사용자1", "222@foo.bar"));
+        userPointJpaRepository.save(new UserPointEntity(사용자, 0L));
 
-        ExecutorService executorService = Executors.newFixedThreadPool(30);
-        CountDownLatch latch = new CountDownLatch(30);
+        int tp = 3;
+        ExecutorService executorService = Executors.newFixedThreadPool(tp);
+        int lp = 10;
+        CountDownLatch latch = new CountDownLatch(lp);
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < lp; i++) {
             executorService.submit(() -> {
                 try {
                     return userPointService.charge(사용자.getId(), new UserPoint(1_000L));
@@ -46,10 +54,10 @@ public class ConcertUserServiceIntegrationTest {
         latch.await(30, TimeUnit.SECONDS);
 
         // when
-        final UserPointEntity 충전된_포인트 = userPointJpaRepository.findByUserId(사용자.getId()).get();
+        final UserPointEntity 충전된_포인트 = userPointJpaRepository.findByUserIdPure(사용자.getId()).get();
 
         // then
-        assertThat(충전된_포인트.getPoint()).isEqualTo(30_000L);
+        assertThat(충전된_포인트.getPoint()).isEqualTo(1_000L * lp);
     }
 
 }

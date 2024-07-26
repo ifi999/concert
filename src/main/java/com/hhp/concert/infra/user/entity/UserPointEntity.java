@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -23,10 +25,14 @@ public class UserPointEntity {
     @Column(nullable = false)
     private Long point;
 
-    public UserPointEntity(final Long id, final ConcertUserEntity user, final Long point) {
+    @Version
+    private Long version;
+
+    public UserPointEntity(final Long id, final ConcertUserEntity user, final Long point, final Long version) {
         this.id = id;
         this.user = user;
         this.point = point;
+        this.version = version;
     }
 
     public UserPointEntity(final ConcertUserEntity user, final Long point) {
@@ -38,4 +44,12 @@ public class UserPointEntity {
         this.point += point;
     }
 
+    @Override
+    public String toString() {
+        return "UserPointEntity{" +
+                "id=" + id +
+                ", point=" + point +
+                ", version=" + version +
+                '}';
+    }
 }

@@ -32,8 +32,8 @@ class UserPointServiceTest {
 
         given(concertUserRepository.getUserById(123L))
             .willReturn(사용자);
-        given(userPointRepository.charge(사용자, 충전금액))
-            .willReturn(new UserPoint(1L, 123L, 100_000L));
+        given(userPointRepository.getUserPoint(사용자))
+            .willReturn(new UserPoint(1L, 123L, 100_000L, 0L));
 
         // when
         final UserPoint 충전된_포인트 = userPointService.charge(사용자.getId(), 충전하는_포인트);
@@ -64,7 +64,7 @@ class UserPointServiceTest {
     void 잔액을_조회한다() {
         // given
         given(userPointRepository.getBalance(123L))
-            .willReturn(new UserPoint(1L, 123L, 100_000L));
+            .willReturn(new UserPoint(1L, 123L, 100_000L, 0L));
 
         // when
         final UserPoint 조회_잔액 = userPointRepository.getBalance(123L);

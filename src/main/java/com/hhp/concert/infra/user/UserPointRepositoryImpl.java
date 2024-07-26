@@ -21,17 +21,17 @@ public class UserPointRepositoryImpl implements UserPointRepository {
     }
 
     @Override
-    public UserPoint charge(final ConcertUser user, final Long point) {
+    public UserPoint getUserPoint(final ConcertUser user) {
         final ConcertUserEntity userEntity = new ConcertUserEntity(user.getId(), user.getName(), user.getEmail());
-        final UserPointEntity userPointEntity = userPointJpaRepository.findByUserIdWithLock(user.getId())
+        final UserPointEntity userPointEntity = userPointJpaRepository.findByUserId(user.getId())
             .orElseGet(() -> userPointJpaRepository.save(new UserPointEntity(userEntity, 0L)));
-
-        userPointEntity.incrementPoint(point);
+        System.out.println("userPointEntity = " + userPointEntity);
 
         return new UserPoint(
             userPointEntity.getId(),
             userPointEntity.getUser().getId(),
-            userPointEntity.getPoint()
+            userPointEntity.getPoint(),
+            userPointEntity.getVersion()
         );
     }
 
@@ -43,7 +43,8 @@ public class UserPointRepositoryImpl implements UserPointRepository {
         return new UserPoint(
             userPointEntity.getId(),
             userPointEntity.getUser().getId(),
-            userPointEntity.getPoint()
+            userPointEntity.getPoint(),
+            userPointEntity.getVersion()
         );
     }
 
@@ -55,7 +56,8 @@ public class UserPointRepositoryImpl implements UserPointRepository {
         return new UserPoint(
             userPointEntity.getId(),
             userPointEntity.getUser().getId(),
-            userPointEntity.getPoint()
+            userPointEntity.getPoint(),
+            userPointEntity.getVersion()
         );
     }
 
@@ -63,14 +65,16 @@ public class UserPointRepositoryImpl implements UserPointRepository {
     public UserPoint updateUserPoint(final UserPoint userPoint) {
         final ConcertUserEntity userEntity = concertUserJpaRepository.findById(userPoint.getUserId())
             .orElseThrow(() -> new ConcertException(ExceptionCode.USER_NOT_FOUND));
-        final UserPointEntity userPointEntity = new UserPointEntity(userPoint.getPointId(), userEntity, userPoint.getPoint());
+        final UserPointEntity userPointEntity = new UserPointEntity(userPoint.getPointId(), userEntity, userPoint.getPoint(), userPoint.getVersion());
 
         final UserPointEntity savedUserPointEntity = userPointJpaRepository.save(userPointEntity);
+        System.out.println("savedUserPointEntity = " + savedUserPointEntity);
 
         return new UserPoint(
             savedUserPointEntity.getId(),
             savedUserPointEntity.getUser().getId(),
-            savedUserPointEntity.getPoint()
+            savedUserPointEntity.getPoint(),
+            savedUserPointEntity.getVersion()
         );
     }
 
