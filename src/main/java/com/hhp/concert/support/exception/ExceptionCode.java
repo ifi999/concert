@@ -10,7 +10,7 @@ public enum ExceptionCode {
     SEAT_NOT_FOUND("좌석을 찾을 수 없습니다."),
     RESERVATION_NOT_FOUND("예약을 찾을 수 없습니다."),
     AUTH_TOKEN_NOT_FOUND("인증 토큰을 찾을 수 없습니다."),
-    ;
+    RESERVATION_ALREADY_RESERVED("이미 예약된 좌석입니다.");
 
     private String message;
 

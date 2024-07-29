@@ -1,6 +1,8 @@
 package com.hhp.concert.domain.concert;
 
 import com.hhp.concert.domain.SeatStatus;
+import com.hhp.concert.support.exception.ConcertException;
+import com.hhp.concert.support.exception.ExceptionCode;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,6 +19,7 @@ public class ConcertSeat {
     private SeatStatus seatStatus;
     private Long price;
     private boolean isAvailable;
+    private Long version;
 
     @Builder
     public ConcertSeat(
@@ -29,7 +32,8 @@ public class ConcertSeat {
         final String seatName,
         final SeatStatus seatStatus,
         final Long price,
-        final boolean isAvailable
+        final boolean isAvailable,
+        final Long version
     ) {
         this.concertSeatId = concertSeatId;
         this.concertId = concertId;
@@ -41,9 +45,14 @@ public class ConcertSeat {
         this.seatStatus = seatStatus;
         this.price = price;
         this.isAvailable = isAvailable;
+        this.version = version;
     }
 
     public void reserve() {
+        if (this.seatStatus == SeatStatus.RESERVED) {
+            throw new ConcertException(ExceptionCode.RESERVATION_ALREADY_RESERVED);
+        }
+
         this.seatStatus = SeatStatus.RESERVED;
     }
 

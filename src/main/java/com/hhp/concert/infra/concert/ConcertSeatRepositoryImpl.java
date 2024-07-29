@@ -56,6 +56,7 @@ public class ConcertSeatRepositoryImpl implements ConcertSeatRepository {
                 .seatName(o.getSeat().getSeatName())
                 .price(o.getSeat().getSeatType().getPrice())
                 .isAvailable(o.getSeatStatus().equals(SeatStatus.AVAILABLE))
+                .version(o.getVersion())
                 .build())
             .toList();
     }
@@ -81,12 +82,13 @@ public class ConcertSeatRepositoryImpl implements ConcertSeatRepository {
             .seatName(concertSeatEntity.getSeat().getSeatName())
             .price(concertSeatEntity.getSeat().getSeatType().getPrice())
             .isAvailable(concertSeatEntity.getSeatStatus().equals(SeatStatus.AVAILABLE))
+            .version(concertSeatEntity.getVersion())
             .build();
     }
 
     @Override
     public ConcertSeat getConcertSeatById(final Long seatId) {
-        final ConcertSeatEntity concertSeatEntity = concertSeatJpaRepository.findBySeatIdWithLock(seatId)
+        final ConcertSeatEntity concertSeatEntity = concertSeatJpaRepository.findBySeatId(seatId)
             .orElseThrow(() -> new ConcertException(ExceptionCode.CONCERT_SEAT_NOT_FOUND));
 
         return ConcertSeat.builder()
@@ -100,6 +102,7 @@ public class ConcertSeatRepositoryImpl implements ConcertSeatRepository {
             .seatStatus(concertSeatEntity.getSeatStatus())
             .price(concertSeatEntity.getSeat().getSeatType().getPrice())
             .isAvailable(concertSeatEntity.getSeatStatus().equals(SeatStatus.AVAILABLE))
+            .version(concertSeatEntity.getVersion())
             .build();
     }
 
@@ -120,6 +123,7 @@ public class ConcertSeatRepositoryImpl implements ConcertSeatRepository {
                 .concertSchedule(concertScheduleEntity)
                 .seat(seatEntity)
                 .seatStatus(seat.getSeatStatus())
+                .version(seat.getVersion())
                 .build();
 
         final ConcertSeatEntity savedConcertSeatEntity = concertSeatJpaRepository.save(concertSeatEntity);
@@ -135,6 +139,7 @@ public class ConcertSeatRepositoryImpl implements ConcertSeatRepository {
             .seatStatus(savedConcertSeatEntity.getSeatStatus())
             .price(savedConcertSeatEntity.getSeat().getSeatType().getPrice())
             .isAvailable(savedConcertSeatEntity.getSeatStatus().equals(SeatStatus.RESERVED))
+            .version(savedConcertSeatEntity.getVersion())
             .build();
     }
 
