@@ -26,10 +26,14 @@ repositories {
 dependencies {
 	// spring
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	// spring-doc
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+
+	// jackson
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2'
 
 	// lombok
 	compileOnly 'org.projectlombok:lombok'
