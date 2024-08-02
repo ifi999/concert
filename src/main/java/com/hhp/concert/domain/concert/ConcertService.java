@@ -37,6 +37,7 @@ public class ConcertService {
         this.dateTimeProvider = dateTimeProvider;
     }
 
+    @Cacheable(value = "concerts")
     public List<Concert> getConcerts() {
         final LocalDate currentDate = dateTimeProvider.currentDate();
 
