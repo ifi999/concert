@@ -28,7 +28,7 @@ public class UserController {
         return EnrollConcertUserResponse.from(enrolledUser);
     }
 
-    @PostMapping("users/{userId}/points/charge")
+    @PostMapping("/users/{userId}/points/charge")
     public ChargePointResponse charge(
             @PathVariable final Long userId,
             @RequestBody ChargePointRequest request
