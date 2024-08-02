@@ -48,4 +48,8 @@ public class TokenService {
         tokenRepository.updateToken(token);
     }
 
+    public void activeTokens(final Integer activeRange) {
+        tokenRepository.activeTokens(activeRange);
+    }
+
 }

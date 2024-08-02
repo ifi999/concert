@@ -18,4 +18,6 @@ public interface TokenRepository {
 
     Long getTokenPendingNumber(Long userId);
 
+    void activeTokens(Integer activeRange);
+
 }

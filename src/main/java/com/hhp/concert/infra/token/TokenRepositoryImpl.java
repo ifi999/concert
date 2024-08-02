@@ -15,9 +15,14 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Repository
 public class TokenRepositoryImpl implements TokenRepository {
+
+    private static final String PENDING_KEY = "PENDING:";
+    private static final String ACTIVE_KEY = "ACTIVE:";
 
     private final TokenJpaRepository tokenJpaRepository;
     private final ConcertUserJpaRepository concertUserJpaRepository;
@@ -53,7 +58,7 @@ public class TokenRepositoryImpl implements TokenRepository {
             )
         );
 
-        redisTemplate.opsForZSet().add("PENDING:", userEntity.getId(), currentDateTime.toInstant(ZoneOffset.UTC).toEpochMilli());
+        redisTemplate.opsForZSet().add(PENDING_KEY, userEntity.getId(), currentDateTime.toInstant(ZoneOffset.UTC).toEpochMilli());
 
         return Token.builder()
             .tokenId(tokenEntity.getId())
@@ -122,7 +127,21 @@ public class TokenRepositoryImpl implements TokenRepository {
 
     @Override
     public Long getTokenPendingNumber(final Long userId) {
-        return redisTemplate.opsForZSet().rank("PENDING:", userId);
+        return redisTemplate.opsForZSet().rank(PENDING_KEY, userId);
+    }
+
+    @Override
+    public void activeTokens(final Integer activeRange) {
+        final Set<Object> tokens = redisTemplate.opsForZSet().range(PENDING_KEY, 0, activeRange);
+
+        if (tokens != null && !tokens.isEmpty()) {
+            redisTemplate.opsForZSet().remove(PENDING_KEY, tokens.toArray());
+
+            for (Object token : tokens) {
+                redisTemplate.opsForValue().set(ACTIVE_KEY + token, token, 600, TimeUnit.SECONDS);
+            }
+        }
+
     }
 
 }
