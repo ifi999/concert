@@ -9,9 +9,11 @@ import com.hhp.concert.support.exception.ConcertException;
 import com.hhp.concert.support.exception.ExceptionCode;
 import com.hhp.concert.support.util.DateTimeProvider;
 import com.hhp.concert.support.util.TokenProvider;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Repository
@@ -21,17 +23,20 @@ public class TokenRepositoryImpl implements TokenRepository {
     private final ConcertUserJpaRepository concertUserJpaRepository;
     private final TokenProvider tokenProvider;
     private final DateTimeProvider dateTimeProvider;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public TokenRepositoryImpl(
         final TokenJpaRepository tokenJpaRepository,
         final ConcertUserJpaRepository concertUserJpaRepository,
         final TokenProvider tokenProvider,
-        final DateTimeProvider dateTimeProvider
+        final DateTimeProvider dateTimeProvider,
+        final RedisTemplate<String, Object> redisTemplate
     ) {
         this.tokenJpaRepository = tokenJpaRepository;
         this.concertUserJpaRepository = concertUserJpaRepository;
         this.tokenProvider = tokenProvider;
         this.dateTimeProvider = dateTimeProvider;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -47,6 +52,8 @@ public class TokenRepositoryImpl implements TokenRepository {
                 currentDateTime)
             )
         );
+
+        redisTemplate.opsForZSet().add("PENDING:", userEntity.getId(), currentDateTime.toInstant(ZoneOffset.UTC).toEpochMilli());
 
         return Token.builder()
             .tokenId(tokenEntity.getId())
@@ -111,6 +118,11 @@ public class TokenRepositoryImpl implements TokenRepository {
             .build();
 
         tokenJpaRepository.save(tokenEntity);
+    }
+
+    @Override
+    public Long getTokenPendingNumber(final Long userId) {
+        return redisTemplate.opsForZSet().rank("PENDING:", userId);
     }
 
 }
