@@ -3,10 +3,15 @@ package com.hhp.concert.domain.concert;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Getter
-public class Concert {
+public class Concert implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 6198714102669185331L;
 
     private Long id;
     private String concertName;

@@ -3,6 +3,7 @@ package com.hhp.concert.domain.concert;
 import com.hhp.concert.domain.user.ConcertUser;
 import com.hhp.concert.domain.user.ConcertUserRepository;
 import com.hhp.concert.support.util.DateTimeProvider;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,7 @@ public class ConcertService {
         this.dateTimeProvider = dateTimeProvider;
     }
 
+    @Cacheable(value = "concerts")
     public List<Concert> getConcerts() {
         final LocalDate currentDate = dateTimeProvider.currentDate();
 
@@ -46,6 +48,7 @@ public class ConcertService {
         return concertRepository.getConcertById(concertId);
     }
 
+    @Cacheable(value = "concertSchedules", key = "#concertId")
     public List<ConcertSchedule> getConcertSchedules(final long concertId) {
         final Concert concert = concertRepository.getConcertById(concertId);
 

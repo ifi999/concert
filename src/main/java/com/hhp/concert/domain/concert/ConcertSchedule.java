@@ -3,11 +3,16 @@ package com.hhp.concert.domain.concert;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
-public class ConcertSchedule {
+public class ConcertSchedule implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 7469361348668608465L;
 
     private Long concertScheduleId;
     private Long concertId;

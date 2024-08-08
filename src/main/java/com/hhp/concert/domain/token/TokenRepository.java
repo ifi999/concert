@@ -16,4 +16,8 @@ public interface TokenRepository {
 
     void updateToken(Token token);
 
+    Long getTokenPendingNumber(Long userId);
+
+    void activeTokens(Integer activeRange);
+
 }
