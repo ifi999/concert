@@ -455,3 +455,113 @@
        - 스레드 풀 개수와 요청 수가 많아도 Redis 캐시가 안정적으로 작동하며 성능 향상을 제공함을 보여줌
    
 </details>
+
+## Query 분석 및 DB Index 설계
+
+### Index 적용 시 고려할 기준
+   - 쿼리 사용 빈도
+     - 인덱스를 생성할 해당 컬럼이 자주 사용되는 쿼리에 포함되는지를 고려
+     - 특히 WHERE, JOIN, ORDER BY, GROUP BY절에 포함되는지
+   - 데이터 카디널리티(Cardinality)
+     - 카디널리티는 특정 컬럼의 유일한 값의 개수를 의미
+     - 카디널리티가 높은 (유니크한 값이 많은) 컬럼에 인덱스를 적용하는 것이 더 효과적
+   - 테이블 크기
+     - 테이블의 크기가 클수록 인덱스의 효과가 증가
+     - 작은 테이블에서는 인덱스를 유지하는 오버헤드가 더 클 수도 있음
+   - 쿼리 실행 계획 분석
+     - 인덱스 생성 전후로 EXPLAIN을 사용하여 쿼리 실행 계획을 분석하고, 효과적으로 성능 개선하는지 확인 필요
+   - CUD 빈도
+     - 인덱스가 적용된 컬럼이 자주 업데이트되거나 제거되는 경우에는 쓰기 성능에 대한 영향을 고려해야 함
+     - 그렇지만 대부분의 쿼리가 SELECT이므로, 읽기 성능에 대해서 더 중점을 두며 생각해야 함
+   - 인덱스의 복잡성
+     - 복합 인덱스는 특정 쿼리 패턴에서는 큰 성능 향상을 제공할 수 있지만, 순서를 잘못 두는 등 설곅가 잘못되면 쿼리 성능에 부정적인 영향을 미침
+
+### Query 분석
+
+<details>
+   <summary>예약 가능 좌석 목록 조회(이미지)</summary>
+
+    SELECT s.*
+      FROM concert_seat s
+     WHERE s.concert_id = :concertId
+       AND s.schedule_id = :scheduleId
+       AND s.seat_status = 'AVAILABLE'
+
+- Index 미생성
+ ![Screenshot_3.png](..%2F..%2FDesktop%2Findex%2FScreenshot_3.png)
+  - 소요 시간 32.47s
+- 단일 Index - schedule_id 생성
+ ![Screenshot_1.png](..%2F..%2FDesktop%2Findex%2FScreenshot_1.png)
+  - 소요 시간 2ms
+- 단일 Index - concert_id 생성
+ ![Screenshot_5.png](..%2F..%2FDesktop%2Findex%2FScreenshot_5.png)
+  - 소요 시간 2ms
+- 복합 Index - concert_id, schedule_id, seat_status 생성
+ ![Screenshot_10.png](..%2F..%2FDesktop%2Findex%2FScreenshot_10.png)
+  - 소요 시간 2ms
+
+> 약 1500만건이 입력된 테이블에 단일 Index, 복합 Index을 적용하였지만, 해당 쿼리로는 무엇이든 효과적으로 조회가 가능했음
+> 
+> 만약 해당 쿼리만 본다면 단일 인덱스 중 하나를 선택해서 생성하겠지만, 추후 다른 쿼리를 생각하면 복합 인덱스를 고려하는 것이 좋아보임
+
+</details>
+
+<details>
+   <summary>예약 대상 좌석 상태 조회(이미지)</summary>
+
+    SELECT s.*
+      FROM concert_seat s
+     WHERE s.concert_id = :concertId
+       AND s.schedule_id = :scheduleId
+       AND s.seat_id = :seatId
+
+ ![Screenshot_11.png](..%2F..%2FDesktop%2Findex%2FScreenshot_11.png)
+
+> `예약 가능 좌석 목록 조회` 쿼리에서 seat_status 대신 seat_id 가 조건인 쿼리
+> 
+> 복합 인덱스를 적용시켜두었지만, schedule_id 까지만 적용되어서 rows가 4,000임을 확인
+</details>
+
+<details>
+   <summary>번외) 콘서트 스케쥴별 좌석 상태 통계</summary>
+
+      SELECT concert_id 
+           , schedule_id 
+           , seat_status 
+           , COUNT(*) AS seat_count
+        FROM concert_seat
+       GROUP BY concert_id, schedule_id, seat_status
+
+- 복합 Index - concert_id, schedule_id
+ ![Screenshot_13.png](..%2F..%2FDesktop%2Findex%2FScreenshot_13.png)
+  - 소요 시간 20.71s
+
+- 복합 Index - concert_id, schedule_id, seat_status
+ ![Screenshot_12.png](..%2F..%2FDesktop%2Findex%2FScreenshot_12.png)
+  - 소요 시간 6ms 
+
+> 처음 복합 인덱스 고려 시에는 `예약 대상 좌석 상태 조회`와 `예약 대상 좌석 상태 조회`의 공통 조건인 concert_id, schedule_id 로만 구성을 함
+> 
+> 현재 본 프로젝트에는 없지만 통계 자료로 보여줄 만한 데이터를 고려해 보니, seat_status까지 포함하는 것이 조금 더 범용성이 있을 것이라고 판단
+> 
+> 복합 인덱스 수정 이후 이전 쿼리 및 통계 쿼리 분석 결과 성능 향상 확인
+
+</details>
+
+<details>
+   <summary>번외) 콘서트별 좌석 판매 금액 통계</summary>
+
+    SELECT cs.concert_id 
+         , SUM(cr.reservation_price) AS total_revenue
+      FROM concert_reservation cr
+      JOIN concert_schedule cs 
+        ON cr.schedule_id = cs.schedule_id
+     WHERE 1 = 1
+       AND reservation_status = 'CONFIRMED'
+     GROUP BY cs.concert_id
+
+> 여러가지 인덱스를 추가해보았으나, 오히려 인덱스를 사용하지 않은 full table scan보다 속도가 느렸음
+> 
+> 이러한 경우는 비정규화를 통해 속도 개선을 해야하지 않을까 하는 추측
+
+</details>
