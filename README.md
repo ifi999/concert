@@ -488,16 +488,16 @@
        AND s.seat_status = 'AVAILABLE'
 
 - Index 미생성
- ![Screenshot_3.png](..%2F..%2FDesktop%2Findex%2FScreenshot_3.png)
+ ![Screenshot_3](https://github.com/user-attachments/assets/13d6215a-d8b0-4d7d-86ae-796a1b12233b)
   - 소요 시간 32.47s
 - 단일 Index - schedule_id 생성
- ![Screenshot_1.png](..%2F..%2FDesktop%2Findex%2FScreenshot_1.png)
+ ![Screenshot_1](https://github.com/user-attachments/assets/527b3793-f667-4de6-8de8-0162db7bd3a3)
   - 소요 시간 2ms
 - 단일 Index - concert_id 생성
- ![Screenshot_5.png](..%2F..%2FDesktop%2Findex%2FScreenshot_5.png)
+ ![Screenshot_5](https://github.com/user-attachments/assets/06804f53-d17f-4404-98c8-43ddbf4e5362)
   - 소요 시간 2ms
 - 복합 Index - concert_id, schedule_id, seat_status 생성
- ![Screenshot_10.png](..%2F..%2FDesktop%2Findex%2FScreenshot_10.png)
+ ![Screenshot_10](https://github.com/user-attachments/assets/4193f171-5dab-44ae-b76c-724b0d697fab)
   - 소요 시간 2ms
 
 > 약 1500만건이 입력된 테이블에 단일 Index, 복합 Index을 적용하였지만, 해당 쿼리로는 무엇이든 효과적으로 조회가 가능했음
@@ -515,7 +515,7 @@
        AND s.schedule_id = :scheduleId
        AND s.seat_id = :seatId
 
- ![Screenshot_11.png](..%2F..%2FDesktop%2Findex%2FScreenshot_11.png)
+ ![Screenshot_11](https://github.com/user-attachments/assets/3fb9f5d7-dd3c-45db-8fdd-19c4f3bdedf6)
 
 > `예약 가능 좌석 목록 조회` 쿼리에서 seat_status 대신 seat_id 가 조건인 쿼리
 > 
@@ -533,11 +533,11 @@
        GROUP BY concert_id, schedule_id, seat_status
 
 - 복합 Index - concert_id, schedule_id
- ![Screenshot_13.png](..%2F..%2FDesktop%2Findex%2FScreenshot_13.png)
+ ![Screenshot_13](https://github.com/user-attachments/assets/7c8a474d-9b7c-4544-930a-242114771601)
   - 소요 시간 20.71s
 
 - 복합 Index - concert_id, schedule_id, seat_status
- ![Screenshot_12.png](..%2F..%2FDesktop%2Findex%2FScreenshot_12.png)
+ ![Screenshot_12](https://github.com/user-attachments/assets/56968c35-2c30-44b0-aac9-3f69a5021f67)
   - 소요 시간 6ms 
 
 > 처음 복합 인덱스 고려 시에는 `예약 대상 좌석 상태 조회`와 `예약 대상 좌석 상태 조회`의 공통 조건인 concert_id, schedule_id 로만 구성을 함
