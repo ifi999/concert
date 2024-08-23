@@ -87,8 +87,8 @@ public class ConcertSeatRepositoryImpl implements ConcertSeatRepository {
     }
 
     @Override
-    public ConcertSeat getConcertSeatById(final Long seatId) {
-        final ConcertSeatEntity concertSeatEntity = concertSeatJpaRepository.findBySeatId(seatId)
+    public ConcertSeat getConcertSeat(final Long scheduleId, final Long seatId) {
+        final ConcertSeatEntity concertSeatEntity = concertSeatJpaRepository.findByScheduleIdAndSeatId(scheduleId, seatId)
             .orElseThrow(() -> new ConcertException(ExceptionCode.CONCERT_SEAT_NOT_FOUND));
 
         return ConcertSeat.builder()

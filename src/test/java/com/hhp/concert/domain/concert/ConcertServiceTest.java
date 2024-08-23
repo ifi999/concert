@@ -220,11 +220,11 @@ class ConcertServiceTest {
             0L
         );
 
-        given(concertSeatRepository.getConcertSeatById(콘서트_좌석.getConcertSeatId()))
+        given(concertSeatRepository.getConcertSeat(스케쥴.getConcertScheduleId(), 콘서트_좌석.getConcertSeatId()))
             .willReturn(콘서트_좌석);
 
         // when
-        final ConcertSeat 콘서트_좌석_조회_응답 = concertSeatRepository.getConcertSeatById(콘서트_좌석.getConcertSeatId());
+        final ConcertSeat 콘서트_좌석_조회_응답 = concertSeatRepository.getConcertSeat(스케쥴.getConcertScheduleId(), 콘서트_좌석.getConcertSeatId());
 
         // then
         assertThat(콘서트_좌석_조회_응답.getPrice()).isEqualTo(30_000L);

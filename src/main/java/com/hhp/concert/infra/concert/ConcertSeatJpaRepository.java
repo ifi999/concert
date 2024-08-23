@@ -52,7 +52,13 @@ public interface ConcertSeatJpaRepository extends JpaRepository<ConcertSeatEntit
     """)
     Optional<ConcertSeatEntity> findBySeatIdWithLock(@Param("seatId") Long seatId);
 
+    @Query("""
+        SELECT s
+          FROM ConcertSeatEntity s
+         WHERE s.id = :seatId
+           AND s.concertSchedule.id = :scheduleId
+    """)
     @Lock(LockModeType.OPTIMISTIC)
-    Optional<ConcertSeatEntity> findBySeatId(@Param("seatId") Long seatId);
+    Optional<ConcertSeatEntity> findByScheduleIdAndSeatId(@Param("scheduleId") Long scheduleId, @Param("seatId") Long seatId);
 
 }
