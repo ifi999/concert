@@ -6,6 +6,8 @@ import com.hhp.concert.domain.user.ConcertUser;
 import com.hhp.concert.domain.user.ConcertUserRepository;
 import com.hhp.concert.domain.user.UserPoint;
 import com.hhp.concert.domain.user.UserPointRepository;
+import com.hhp.concert.event.payment.PaymentEventPublisher;
+import com.hhp.concert.event.payment.PaymentSuccessEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,17 +21,20 @@ public class PaymentService {
     private final ConcertReservationRepository concertReservationRepository;
     private final ConcertUserRepository concertUserRepository;
     private final UserPointRepository userPointRepository;
+    private final PaymentEventPublisher paymentEventPublisher;
 
     public PaymentService(
         final PaymentRepository paymentRepository,
         final ConcertReservationRepository concertReservationRepository,
         final ConcertUserRepository concertUserRepository,
-        final UserPointRepository userPointRepository
+        final UserPointRepository userPointRepository,
+        final PaymentEventPublisher paymentEventPublisher
     ) {
         this.paymentRepository = paymentRepository;
         this.concertReservationRepository = concertReservationRepository;
         this.concertUserRepository = concertUserRepository;
         this.userPointRepository = userPointRepository;
+        this.paymentEventPublisher = paymentEventPublisher;
     }
 
     public Payment pay(final Payment payment) {
@@ -43,7 +48,11 @@ public class PaymentService {
         userPointRepository.updateUserPoint(userPoint);
         final ConcertReservation updatedReservation = concertReservationRepository.updateConcertReservation(reservation);
 
-        return paymentRepository.pay(user, updatedReservation, payment.getPaymentAmount());
+        final Payment savedPayment = paymentRepository.pay(user, updatedReservation, payment.getPaymentAmount());
+
+        paymentEventPublisher.success(new PaymentSuccessEvent(savedPayment));
+
+        return savedPayment;
     }
 
     public List<Payment> getUserPayments(final long userId) {
